@@ -6,10 +6,10 @@ void main(){
       home: Scaffold(
         backgroundColor: Colors.blueGrey,
         appBar: AppBar(
-          title: Text('E-Grave Lot'),
+          title: const Text('E-Grave Lot'),
           backgroundColor: Colors.redAccent,
         ),
-        body: Center(
+        body:const Center(
           child: Image(
             image:
               AssetImage('images/logo.jpg'),
