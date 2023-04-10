@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      title: 'E-Grave Apps',
       debugShowCheckedModeBanner: false,
       theme: MyTheme().lightTheme(Theme.of(context).colorScheme),
       scrollBehavior: MyCustomScrollBehavior(),
