@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:grave_apps/main.dart';
+import 'package:get/get.dart';
+
+import '../widget/kad_arwah.dart';
 
 class HomeController extends GetxController {
   final searchInput = TextEditingController();
+  var index = 0.obs;
 
   List<KadArwah> cards = const [
     KadArwah(

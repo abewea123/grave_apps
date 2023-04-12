@@ -21,6 +21,44 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  # flutter_native_splash: ^2.2.19
+  # flutter_rename_app_plus: ^1.1.0
+  # rename_app_plus: ^1.2.1
+  icons_launcher: ^1.1.9
+
+
+flutter_native_splash:
+  color: "#fcfcff"
+  color_dark: "#1a1c1e"
+  image: "assets/images/playstore.png"
+  image_dark: "assets/images/playstore.png"
+  android: true
+  ios: true
+  android_12:
+    image: "assets/images/playstore.png"
+    icon_background_color: "#38a4dd"
+    image_dark: "assets/images/playstore.png"
+    icon_background_color_dark: "#38a4dd"
+
+flutter_rename_app_plus:
+  application_name: E-Grave Lot
+  dart_package_name: grave_apps
+  application_id: com.abewea.grave_apps
+  bundle_id: com.abewea.grave_apps
+  android_package_name: com.abewea.grave_apps
+
+
+flutter_icons:
+  android: false
+  ios: true
+  web: true
+  macos: true
+  image_path: "assets/images/icon.png"
+  adaptive_icon_background: "assets/images/background.png"
+  adaptive_icon_foreground: "assets/images/playstore.png"
+  remove_alpha_ios: true
+  remove_alpha_macos: true
+
 
 flutter:
 
