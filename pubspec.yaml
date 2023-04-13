@@ -11,10 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
 
-
+  #UI
   cupertino_icons: ^1.0.2
-  get: ^4.6.5
   flutter_card_swiper: ^4.1.0+2
+  dynamic_color: ^1.6.3
+
+  #State Management
+  get: ^4.6.5
+  get_storage: ^2.1.1
+
 
 dev_dependencies:
   flutter_test:
