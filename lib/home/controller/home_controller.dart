@@ -1,44 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../model/jenazah_model.dart';
 import '../widget/kad_arwah.dart';
 
 class HomeController extends GetxController {
   final searchInput = TextEditingController();
   var index = 0.obs;
 
-  List<KadArwah> cards = const [
-    KadArwah(
+  List<Jenazah> jenazah = [
+    Jenazah(
       nama: 'Adlan Khayran',
-      alamat: 'Kajang, Selangor',
-      tarikhLahir: '04/05/1998',
-      tarikhMeninggal: '01/12/20xx',
+      tempatTinggal: 'Kajang, Selangor',
       lotKubur: '0112',
       nota: '',
+      profileImage: '',
+      latitude: 0,
+      longitude: 0,
+      tarikhLahir: DateTime.now(),
+      tarikhMeninggal: DateTime.now(),
     ),
-    KadArwah(
+    Jenazah(
       nama: 'Ali Bin Abu',
-      alamat: 'Seri Kembangan, Selangor',
-      tarikhLahir: '04/11/2001',
-      tarikhMeninggal: '01/12/20xx',
+      tempatTinggal: 'Seri Kembangan, Selangor',
       lotKubur: '0113',
       nota: '',
+      profileImage: '',
+      latitude: 0,
+      longitude: 0,
+      tarikhLahir: DateTime.now(),
+      tarikhMeninggal: DateTime.now(),
     ),
-    KadArwah(
+    Jenazah(
       nama: 'Ahmad Albab',
-      alamat: 'Isketambola, Pasir Berdegung',
-      tarikhLahir: '04/05/1978',
-      tarikhMeninggal: '01/01/20xx',
+      tempatTinggal: 'Isketambola, Pasir Berdengung',
       lotKubur: '0114',
       nota: 'Arwah kedekut orangnya',
+      profileImage: '',
+      latitude: 0,
+      longitude: 0,
+      tarikhLahir: DateTime.now(),
+      tarikhMeninggal: DateTime.now(),
     ),
-    KadArwah(
+    Jenazah(
       nama: 'Abdullah',
-      alamat: 'Pasir Mas, Kelantan',
-      tarikhLahir: '04/05/1950',
-      tarikhMeninggal: '01/12/20xx',
-      lotKubur: '01111',
+      tempatTinggal: 'Pasir Mas, Kelantan',
+      lotKubur: '0115',
       nota: '',
+      profileImage: '',
+      latitude: 0,
+      longitude: 0,
+      tarikhLahir: DateTime.now(),
+      tarikhMeninggal: DateTime.now(),
     ),
   ];
+
+  List<KadArwah> cards() {
+    List<KadArwah> kad = [];
+
+    for (var kadArwah in jenazah) {
+      kad.add(
+        KadArwah(
+          nama: kadArwah.nama,
+          alamat: kadArwah.tempatTinggal,
+          tarikhLahir: kadArwah.tarikhLahir.toString(),
+          tarikhMeninggal: kadArwah.tarikhMeninggal.toString(),
+          lotKubur: kadArwah.lotKubur,
+          nota: kadArwah.nota,
+        ),
+      );
+    }
+    return kad;
+  }
 }

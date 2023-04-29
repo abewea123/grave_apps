@@ -1,20 +1,26 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:grave_apps/home/controller/home_controller.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/config/scroll_config.dart';
 import 'package:grave_apps/config/theme_data.dart';
 import 'config/color_scheme.dart';
-import 'home/view_home.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await GetStorage.init();
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  final _controller = Get.put(HomeController());
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,8 @@ class MyApp extends StatelessWidget {
         theme: MyTheme().lightTheme(colorSchemeLight),
         darkTheme: MyTheme().darkTheme(colorSchemeDark),
         scrollBehavior: MyCustomScrollBehavior(),
-        home: Home(controller: _controller),
+        initialRoute: MyRoutes.home,
+        getPages: MyRoutes().page,
       );
     });
   }

@@ -125,19 +125,19 @@ class KadArwah extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            Center(
-              child: SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.location_on),
-                  label: const Text(
-                    'Lokasi',
-                  ),
-                ),
-              ),
-            ),
+            // Center(
+            //   child: SizedBox(
+            //     height: 50,
+            //     width: double.infinity,
+            //     child: ElevatedButton.icon(
+            //       onPressed: () {},
+            //       icon: const Icon(Icons.location_on),
+            //       label: const Text(
+            //         'Lokasi',
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

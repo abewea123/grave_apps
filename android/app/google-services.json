@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "254871228994",
+    "project_id": "e-grave",
+    "storage_bucket": "e-grave.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254871228994:android:ab318b88eeacd26a4313db",
+        "android_client_info": {
+          "package_name": "com.abewea.grave_apps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254871228994-7glv2jv3hp85g9ia12scurhfeha23k81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7MgBZ_lFpCeju0Sgfs8P-9tta-D8gf0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254871228994-7glv2jv3hp85g9ia12scurhfeha23k81.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

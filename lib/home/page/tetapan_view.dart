@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:grave_apps/config/routes.dart';
+import 'package:grave_apps/config/toast_view.dart';
 
 import '../../config/theme_data.dart';
 
 class TetapanView extends StatefulWidget {
-  const TetapanView({super.key});
+  final User? user;
+  const TetapanView({super.key, required this.user});
 
   @override
   State<TetapanView> createState() => _TetapanViewState();
@@ -51,7 +55,7 @@ class _TetapanViewState extends State<TetapanView> {
                       ),
                       const SizedBox(height: 10),
                       ListTile(
-                        leading: Icon(Icons.format_paint),
+                        leading: const Icon(Icons.format_paint),
                         title: const Text('Tema'),
                         subtitle: Text(themeSubtitle(onDarkMode, systemTheme)),
                         onTap: () async {
@@ -68,11 +72,63 @@ class _TetapanViewState extends State<TetapanView> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      widget.user == null
+                          ? ListTile(
+                              leading: const Icon(Icons.person),
+                              title: const Text('Log Masuk'),
+                              subtitle:
+                                  const Text('Log masuk akaun pengurusan'),
+                              onTap: () => Get.toNamed(MyRoutes.login),
+                            )
+                          : ListTile(
+                              leading: const Icon(Icons.logout),
+                              title: const Text('Log Keluar'),
+                              subtitle:
+                                  const Text('Log keluar akaun pengurusan'),
+                              onTap: () {
+                                FirebaseAuth.instance.signOut().then((value) {
+                                  ToastView.error(
+                                    context,
+                                    icon: Icons.logout,
+                                    subtitle:
+                                        'Sila log masuk semula untuk mengaktifkan ciri pengurusan',
+                                    title: 'Log Keluar Berjaya',
+                                  );
+                                });
+                              },
+                            ),
+                      Text(
+                        'Debugging',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       ListTile(
-                        leading: Icon(Icons.person),
-                        title: Text('Log Masuk'),
-                        subtitle: Text('Log masuk akaun pengurusan'),
-                        onTap: () {},
+                        leading: const Icon(Icons.close),
+                        title: const Text('Toast Error'),
+                        subtitle: const Text('Show error message'),
+                        onTap: () {
+                          ToastView.error(
+                            context,
+                            icon: Icons.close,
+                            subtitle: 'Ini adalah percubaan mesej kesalahan',
+                            title: 'Percubaan mesej kesalahan',
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.done),
+                        title: const Text('Toast Success'),
+                        subtitle: const Text('Show success message'),
+                        onTap: () {
+                          ToastView.success(
+                            context,
+                            icon: Icons.done,
+                            subtitle: 'Ini adalah mesej percubaan',
+                            title: 'Percubaan mesej selesai',
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -143,6 +143,7 @@ class MyTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: color.background,
         toolbarHeight: 80,
+        shadowColor: Colors.transparent,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
