@@ -1,106 +1,59 @@
-// ignore_for_file: prefer_const_constructors
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/haptic_feedback.dart';
+import 'package:grave_apps/config/routes.dart';
 
-class PengurusanJenazahView extends StatelessWidget {
-  const PengurusanJenazahView({super.key});
+class PengurusanJenazahView extends StatefulWidget {
+  final User? user;
+  const PengurusanJenazahView({super.key, required this.user});
 
+  @override
+  State<PengurusanJenazahView> createState() => _PengurusanJenazahViewState();
+}
+
+class _PengurusanJenazahViewState extends State<PengurusanJenazahView> {
+  bool isScroll = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar.large(
-            title: const Text('Pengurusan'),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Wan Luqman'),
-                  subtitle: Text('Pemaju Perisian Aplikasi'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Akid Fikri'),
-                  subtitle: Text('Pembantu Pemaju Perisian Aplikasi'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Shariff'),
-                  subtitle: Text('Pengurus Jenazah (Pegawai Masjid)'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Zayyan'),
-                  subtitle: Text('Pembantu Pengurus Jenazah'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Roslan'),
-                  subtitle: Text('Mandi Jenazah Lelaki'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Puan Hajjah'),
-                  subtitle: Text('Mandi Jenazah Perempuan'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Che Amad'),
-                  subtitle: Text('Perkebumian'),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.secondaryContainer
-                        : Theme.of(context).colorScheme.secondary,
-                  ),
-                  title: Text('Hassan'),
-                  subtitle: Text('Perkebumian'),
-                  onTap: () {},
-                ),
-              ],
+      floatingActionButton: widget.user != null
+          ? FloatingActionButton.extended(
+              isExtended: isScroll,
+              onPressed: () {
+                Haptic.feedbackClick();
+                Get.toNamed(MyRoutes.tambahPengurusan);
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Tambah Pengurusan'),
+            )
+          : null,
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: (noti) {
+          if (noti.direction == ScrollDirection.forward) {
+            setState(() {
+              isScroll = true;
+            });
+          } else if (noti.direction == ScrollDirection.reverse) {
+            setState(() {
+              isScroll = false;
+            });
+          }
+          return true;
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar.large(
+              title: const Text('Pengurusan'),
             ),
-          )
-        ],
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

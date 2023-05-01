@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 class LoginController extends GetxController {
   final emailText = TextEditingController();
   final passwordText = TextEditingController();
+  var showPassword = true.obs;
   String? errorEmail;
   String? errorPassword;
   String showErrorCode = '';
@@ -16,6 +17,10 @@ class LoginController extends GetxController {
 
   bool checkEmail(String email) {
     return EmailValidator.validate(email);
+  }
+
+  void showingPassword() {
+    showPassword.value = !showPassword.value;
   }
 
   Future<User?> login() async {

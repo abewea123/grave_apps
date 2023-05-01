@@ -20,7 +20,6 @@ class ViewLogin extends StatelessWidget {
               child: Form(
                 key: _loginController.formKey,
                 child: SingleChildScrollView(
-                  // padding: const EdgeInsets.all(8.0),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                         maxHeight: MediaQuery.of(context).size.height),
@@ -55,6 +54,7 @@ class ViewLogin extends StatelessWidget {
                           autofocus: true,
                           controller: _loginController.emailText,
                           keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             label: const Text('Email'),
                             errorText: _loginController.errorEmail,
@@ -71,35 +71,47 @@ class ViewLogin extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          focusNode: _loginController.passwordFocus,
-                          controller: _loginController.passwordText,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            label: const Text('Kata laluan'),
-                            errorText: _loginController.errorPassword,
-                          ),
-                          validator: (value) {
-                            if (value!.length < 6) {
-                              return 'Kata laluan anda mesti melebihi 6 aksara!';
-                            }
-                            return null;
-                          },
-                          onEditingComplete: () async {
-                            final user = await _loginController.login();
-                            await Future.delayed(const Duration(seconds: 1));
-                            if (user != null && context.mounted) {
-                              ToastView.success(context,
-                                  title: 'Log Masuk Berjaya',
-                                  subtitle:
-                                      'Selamat kembali ${user.displayName}!',
-                                  icon: Icons.person);
-                              Get.back();
-                              Get.back();
-                            }
-                          },
-                        ),
+                        Obx(() => TextFormField(
+                              focusNode: _loginController.passwordFocus,
+                              controller: _loginController.passwordText,
+                              keyboardType: TextInputType.visiblePassword,
+                              obscureText: !_loginController.showPassword.value,
+                              decoration: InputDecoration(
+                                label: const Text('Kata laluan'),
+                                errorText: _loginController.errorPassword,
+                                suffixIconColor: Colors.grey,
+                                suffixIcon: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: IconButton(
+                                    onPressed: _loginController.showingPassword,
+                                    icon: _loginController.showPassword.value ==
+                                            true
+                                        ? const Icon(Icons.visibility)
+                                        : const Icon(Icons.visibility_off),
+                                  ),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value!.length < 6) {
+                                  return 'Kata laluan anda mesti melebihi 6 aksara!';
+                                }
+                                return null;
+                              },
+                              onEditingComplete: () async {
+                                final user = await _loginController.login();
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                if (user != null && context.mounted) {
+                                  ToastView.success(context,
+                                      title: 'Log Masuk Berjaya',
+                                      subtitle:
+                                          'Selamat kembali ${user.displayName}!',
+                                      icon: Icons.person);
+                                  Get.back();
+                                  Get.back();
+                                }
+                              },
+                            )),
                         const Spacer(flex: 2),
                         Center(
                           child: Text.rich(

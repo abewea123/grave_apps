@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
                   index: controller.index.value,
                   children: [
                     LamanUtamaView(controller: controller),
-                    const PengurusanJenazahView(),
+                    PengurusanJenazahView(user: user),
                     TetapanView(user: user),
                   ],
                 ));

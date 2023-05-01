@@ -1,6 +1,8 @@
 import 'package:achievement_view/achievement_view.dart';
 import 'package:flutter/material.dart';
 
+import 'haptic_feedback.dart';
+
 class ToastView {
   static error(BuildContext context,
       {required String title,
@@ -21,11 +23,12 @@ class ToastView {
         color: Theme.of(context).colorScheme.error,
       ),
       color: Theme.of(context).colorScheme.errorContainer,
-      duration: title.length < 30
+      duration: subtitle.length < 30
           ? const Duration(seconds: 2)
           : const Duration(seconds: 8),
       isCircle: true,
     ).show();
+    Haptic.feedbackError();
   }
 
   static success(BuildContext context,
@@ -47,10 +50,11 @@ class ToastView {
         color: Colors.green.shade800,
       ),
       color: Colors.green.shade100,
-      duration: title.length < 30
+      duration: title.length < 30 || subtitle.length < 30
           ? const Duration(seconds: 2)
           : const Duration(seconds: 8),
       isCircle: true,
     ).show();
+    Haptic.feedbackSuccess();
   }
 }

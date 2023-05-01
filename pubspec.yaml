@@ -16,6 +16,7 @@ dependencies:
   flutter_card_swiper: ^4.1.0+2
   dynamic_color: ^1.6.3
   achievement_view: ^1.0.0
+  dotted_border: ^2.0.0+3
 
   #State Management
   get: ^4.6.5
@@ -28,6 +29,7 @@ dependencies:
 
   #Model
   email_validator: ^2.1.17
+  image_picker: ^0.8.7+4
 
 
 dev_dependencies:
