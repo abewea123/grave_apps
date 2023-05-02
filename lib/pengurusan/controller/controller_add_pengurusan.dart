@@ -1,12 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/toast_view.dart';
+import 'package:grave_apps/pengurusan/controller/pick_image_web.dart';
+import 'package:grave_apps/pengurusan/view/crop_web.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:universal_html/html.dart' as html;
 import '../../config/haptic_feedback.dart';
 
 class ControllerAddPengurusan extends GetxController {
@@ -24,8 +29,21 @@ class ControllerAddPengurusan extends GetxController {
   String? errorEmail;
 
   final imagePicker = ImagePicker();
-  var imageLoc = ''.obs;
-  var imagePath = ''.obs;
+  File imageFile = File('');
+  html.File? webFile;
+
+  var fileName = ''.obs;
+  Uint8List webImage = Uint8List(10);
+
+  void chooseImage(BuildContext context) async {
+    Haptic.feedbackClick();
+    final file =
+        await _pickImage(context, (file) => _cropSquareImage(file, context));
+
+    if (file == null) return;
+    imageFile = File(file.path);
+    update();
+  }
 
   @override
   void onReady() {
@@ -63,25 +81,45 @@ class ControllerAddPengurusan extends GetxController {
     return EmailValidator.validate(email);
   }
 
-  void pickImage(BuildContext context) async {
+  Future<CroppedFile?> _pickImage(BuildContext context,
+      Future<CroppedFile?> Function(CroppedFile file) cropImage) async {
     try {
-      final XFile? image =
-          await imagePicker.pickImage(source: ImageSource.gallery);
+      if (GetPlatform.isWeb) {
+        html.FileUploadInputElement uploadInput = html.FileUploadInputElement()
+          ..accept = 'image/*';
+        uploadInput.click();
 
-      if (image == null) {
-        imageLoc.value = '';
-        imagePath.value = '';
-        return;
+        uploadInput.onChange.listen((event) {
+          webFile = uploadInput.files!.first;
+          final reader = html.FileReader();
+          reader.readAsDataUrl(webFile!);
+
+          reader.onLoadEnd.listen((event) {
+            Uint8List data = const Base64Decoder()
+                .convert(reader.result.toString().split(",").last);
+            Get.to(CropWeb(image: data));
+          });
+        });
+        return null;
       }
-      imageLoc.value = image.name.toString();
-      imagePath.value = image.path.toString();
+
+      final pickImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (pickImage == null) return null;
+
+      final file = CroppedFile(pickImage.path);
+      fileName.value = pickImage.name;
+
+      return cropImage(file);
     } on Exception catch (e) {
-      imageLoc.value = '';
-      imagePath.value = '';
+      imageFile = File('');
       ToastView.error(context,
           title: 'Kesalahan Telah Berlaku',
           subtitle: 'Kesalahan: $e',
           icon: Icons.error);
+      update();
+      return null;
     }
   }
 
@@ -113,4 +151,34 @@ class ControllerAddPengurusan extends GetxController {
       );
     }
   }
+
+  Future<CroppedFile?> _cropSquareImage(
+          CroppedFile imageFile, BuildContext context) async =>
+      await ImageCropper().cropImage(
+        sourcePath: imageFile.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        aspectRatioPresets: [
+          CropAspectRatioPreset.original,
+          CropAspectRatioPreset.square
+        ],
+        compressQuality: 70,
+        compressFormat: ImageCompressFormat.jpg,
+        uiSettings: [
+          _androidUiCrop(),
+          _webUiCrop(context),
+        ],
+      );
+  WebUiSettings _webUiCrop(BuildContext context) => WebUiSettings(
+        context: context,
+        enableResize: true,
+        enableZoom: true,
+        boundary: const CroppieBoundary(width: 350, height: 350),
+        viewPort: const CroppieViewPort(width: 350, height: 350),
+      );
+
+  AndroidUiSettings _androidUiCrop() => AndroidUiSettings(
+        toolbarTitle: 'Sunting Gambar',
+        toolbarColor: Get.theme.primaryColor,
+        toolbarWidgetColor: Colors.white,
+      );
 }

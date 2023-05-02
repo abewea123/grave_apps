@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -188,37 +186,41 @@ class ViewAddPengurusan extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 20),
-                    DottedBorder(
-                      dashPattern: const [5, 3],
-                      borderType: BorderType.RRect,
-                      color: Theme.of(context).colorScheme.tertiary,
-                      radius: const Radius.circular(5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
-                          child: InkWell(
-                            onTap: () => _addPengurusan.pickImage(context),
-                            child: Ink(
-                              height: 80,
-                              width: double.infinity,
-                              color: Get.isDarkMode
-                                  ? Colors.grey.shade900
-                                  : Colors.grey.shade200,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Obx(() => Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage: FileImage(File(
-                                              _addPengurusan.imagePath.value)),
-                                          child:
-                                              _addPengurusan.imageLoc.value ==
+                    GetBuilder<ControllerAddPengurusan>(
+                      builder: (_) {
+                        return DottedBorder(
+                          dashPattern: const [5, 3],
+                          borderType: BorderType.RRect,
+                          color: Theme.of(context).colorScheme.tertiary,
+                          radius: const Radius.circular(5),
+                          child: Padding(
+                            padding: const EdgeInsets.all(3),
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5)),
+                              child: InkWell(
+                                onTap: () =>
+                                    _addPengurusan.chooseImage(context),
+                                child: Ink(
+                                  height: 80,
+                                  width: double.infinity,
+                                  color: Get.isDarkMode
+                                      ? Colors.grey.shade900
+                                      : Colors.grey.shade200,
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: CircleAvatar(
+                                              radius: 30,
+                                              child: _addPengurusan
+                                                          .imageFile.path ==
                                                       ''
                                                   ? Icon(
                                                       Icons.upload,
@@ -226,29 +228,44 @@ class ViewAddPengurusan extends StatelessWidget {
                                                           .colorScheme
                                                           .onSecondaryContainer,
                                                     )
-                                                  : const SizedBox(),
-                                        ),
-                                        const SizedBox(width: 30),
-                                        Expanded(
-                                          child: Text(
-                                            _addPengurusan.imageLoc.value == ''
-                                                ? 'Muat naik gambar akaun profil'
-                                                : _addPengurusan.imageLoc.value,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
+                                                  : GetPlatform.isWeb
+                                                      ? ClipOval(
+                                                          child: Image.memory(
+                                                              _addPengurusan
+                                                                  .webImage),
+                                                        )
+                                                      : ClipOval(
+                                                          child: Image.file(
+                                                              _addPengurusan
+                                                                  .imageFile),
+                                                        ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    )),
+                                          const SizedBox(width: 30),
+                                          Expanded(
+                                            flex: 5,
+                                            child: Text(
+                                              _addPengurusan.imageFile.path ==
+                                                      ''
+                                                  ? 'Muat naik gambar akaun profil'
+                                                  : _addPengurusan
+                                                      .fileName.value,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 30),
                     Align(
