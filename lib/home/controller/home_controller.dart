@@ -7,6 +7,7 @@ import '../widget/kad_arwah.dart';
 class HomeController extends GetxController {
   final searchInput = TextEditingController();
   var index = 0.obs;
+  var fabScrollPengurusan = true.obs;
 
   List<Jenazah> jenazah = [
     Jenazah(

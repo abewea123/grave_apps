@@ -1,4 +1,5 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/pengurusan/controller/controller_add_pengurusan.dart';
@@ -119,7 +120,7 @@ class ViewAddPengurusan extends StatelessWidget {
                       controller: _addPengurusan.kawasanQaryahText,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.name,
-                      textCapitalization: TextCapitalization.sentences,
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         icon: Icon(
                           Icons.mosque,
@@ -140,7 +141,7 @@ class ViewAddPengurusan extends StatelessWidget {
                       controller: _addPengurusan.jawatanPengurusanText,
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.name,
-                      textCapitalization: TextCapitalization.sentences,
+                      textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         icon: Icon(
                           Icons.cases,
@@ -178,7 +179,7 @@ class ViewAddPengurusan extends StatelessWidget {
                         hintText: 'abdullah@email.com',
                       ),
                       validator: (value) {
-                        bool validate = _addPengurusan.checkEmail(value!);
+                        bool validate = EmailValidator.validate(value!);
                         if (!validate) {
                           return 'Sila masukkan email dengan betul!';
                         }
@@ -199,8 +200,9 @@ class ViewAddPengurusan extends StatelessWidget {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5)),
                               child: InkWell(
-                                onTap: () =>
-                                    _addPengurusan.chooseImage(context),
+                                onTap: () => GetPlatform.isWeb
+                                    ? _addPengurusan.chooseImageWeb(context)
+                                    : _addPengurusan.chooseImage(context),
                                 child: Ink(
                                   height: 80,
                                   width: double.infinity,
@@ -220,7 +222,7 @@ class ViewAddPengurusan extends StatelessWidget {
                                             child: CircleAvatar(
                                               radius: 30,
                                               child: _addPengurusan
-                                                          .imageFile.path ==
+                                                          .fileName.value ==
                                                       ''
                                                   ? Icon(
                                                       Icons.upload,
@@ -245,7 +247,7 @@ class ViewAddPengurusan extends StatelessWidget {
                                           Expanded(
                                             flex: 5,
                                             child: Text(
-                                              _addPengurusan.imageFile.path ==
+                                              _addPengurusan.fileName.value ==
                                                       ''
                                                   ? 'Muat naik gambar akaun profil'
                                                   : _addPengurusan
@@ -274,7 +276,8 @@ class ViewAddPengurusan extends StatelessWidget {
                         height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _addPengurusan.confirmationAdd,
+                          onPressed: () =>
+                              _addPengurusan.confirmationAdd(context),
                           child: const Text('Tambah Pengurusan'),
                         ),
                       ),

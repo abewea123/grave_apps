@@ -1,44 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/routes.dart';
+import 'package:grave_apps/home/model/pengurusan_model.dart';
 
-class PengurusanJenazahView extends StatefulWidget {
+import '../controller/home_controller.dart';
+
+class PengurusanJenazahView extends StatelessWidget {
   final User? user;
-  const PengurusanJenazahView({super.key, required this.user});
-
-  @override
-  State<PengurusanJenazahView> createState() => _PengurusanJenazahViewState();
-}
-
-class _PengurusanJenazahViewState extends State<PengurusanJenazahView> {
-  bool isScroll = true;
+  PengurusanJenazahView({super.key, required this.user});
+  final _homeController = Get.find<HomeController>();
+  // bool isScroll = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: widget.user != null
-          ? FloatingActionButton.extended(
-              isExtended: isScroll,
-              onPressed: () {
-                Haptic.feedbackClick();
-                Get.toNamed(MyRoutes.tambahPengurusan);
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Tambah Pengurusan'),
-            )
-          : null,
+      floatingActionButton: user!.isAnonymous
+          ? null
+          : Obx(() => FloatingActionButton.extended(
+                isExtended: _homeController.fabScrollPengurusan.value,
+                onPressed: () {
+                  Haptic.feedbackClick();
+                  Get.toNamed(MyRoutes.tambahPengurusan);
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Tambah Pengurusan'),
+              )),
       body: NotificationListener<UserScrollNotification>(
         onNotification: (noti) {
           if (noti.direction == ScrollDirection.forward) {
-            setState(() {
-              isScroll = true;
-            });
+            _homeController.fabScrollPengurusan.value = true;
           } else if (noti.direction == ScrollDirection.reverse) {
-            setState(() {
-              isScroll = false;
-            });
+            _homeController.fabScrollPengurusan.value = false;
           }
           return true;
         },
@@ -47,14 +42,145 @@ class _PengurusanJenazahViewState extends State<PengurusanJenazahView> {
             SliverAppBar.large(
               title: const Text('Pengurusan'),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [],
-              ),
-            )
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('pengurusan')
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SliverFillRemaining(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            Text('Memuat naik...'),
+                            SizedBox(height: 10),
+                            CircularProgressIndicator.adaptive(),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      ((context, index) {
+                        return Column(
+                          children: snapshot.data!.docs.map((docs) {
+                            final pengurusan = Pengurusan.fromRealtime(docs);
+                            return ListTile(
+                              title: Text(pengurusan.nama.toString()),
+                              subtitle: Text(pengurusan.jawatan.toString()),
+                              onTap: () {
+                                Haptic.feedbackSuccess();
+                                showBottom(context, pengurusan);
+                              },
+                              leading: CircleAvatar(
+                                child: ClipOval(
+                                    child: Image.network(pengurusan.photoURL)),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }),
+                      childCount: 1,
+                    ),
+                  );
+                }),
           ],
         ),
       ),
     );
+  }
+
+  Future<dynamic> showBottom(BuildContext context, Pengurusan pengurusan) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  child: ClipOval(
+                    child: Image.network(pengurusan.photoURL),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  pengurusan.nama.toString(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                  ),
+                ),
+                // const SizedBox(height: 5),
+                Text(
+                  pengurusan.jawatan.toString(),
+                  style: const TextStyle(color: Colors.grey, fontSize: 18),
+                ),
+                const SizedBox(height: 20),
+                const Divider(),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Icon(
+                        Icons.mosque,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        pengurusan.kawasanQariah,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Icon(
+                        Icons.email,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        pengurusan.email,
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                      onPressed: () {
+                        Haptic.feedbackClick();
+                      },
+                      icon: const Icon(Icons.call),
+                      label: const Text('Hubungi')),
+                ),
+                const SizedBox(height: 4),
+              ],
+            ),
+          );
+        },
+        isScrollControlled: true);
   }
 }

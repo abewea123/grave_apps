@@ -72,7 +72,7 @@ class _TetapanViewState extends State<TetapanView> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      widget.user == null
+                      widget.user!.isAnonymous
                           ? ListTile(
                               leading: const Icon(Icons.person),
                               title: const Text('Log Masuk'),
@@ -97,39 +97,13 @@ class _TetapanViewState extends State<TetapanView> {
                                 });
                               },
                             ),
-                      Text(
-                        'Debugging',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.close),
-                        title: const Text('Toast Error'),
-                        subtitle: const Text('Show error message'),
-                        onTap: () {
-                          ToastView.error(
-                            context,
-                            icon: Icons.close,
-                            subtitle: 'Ini adalah percubaan mesej kesalahan',
-                            title: 'Percubaan mesej kesalahan',
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.done),
-                        title: const Text('Toast Success'),
-                        subtitle: const Text('Show success message'),
-                        onTap: () {
-                          ToastView.success(
-                            context,
-                            icon: Icons.done,
-                            subtitle: 'Ini adalah mesej percubaan',
-                            title: 'Percubaan mesej selesai',
-                          );
-                        },
-                      ),
+                      // Text(
+                      //   'Debugging',
+                      //   style: TextStyle(
+                      //     color: Theme.of(context).colorScheme.primary,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

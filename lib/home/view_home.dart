@@ -19,10 +19,28 @@ class Home extends StatelessWidget {
           builder: (context, snapshot) {
             User? user = snapshot.data;
 
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
+
             if (user == null) {
               debugPrint('User has been logout! Sign in anonymous');
-            } else {
-              debugPrint('User has been login');
+
+              FirebaseAuth.instance.signInAnonymously();
+              return SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Text('Melaraskan data...'),
+                    SizedBox(height: 10),
+                    CircularProgressIndicator.adaptive(),
+                  ],
+                ),
+              );
             }
             return Obx(() => IndexedStack(
                   index: controller.index.value,
