@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:get/get.dart';
+import 'package:grave_apps/home/controller/search_controller.dart';
 
 import '../controller/home_controller.dart';
 
@@ -25,12 +27,36 @@ class LamanUtamaView extends StatelessWidget {
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
                   children: [
-                    SizedBox(
-                      width: 700,
-                      child: TextField(
-                        controller: _controller.searchInput,
-                        decoration: const InputDecoration(
-                          hintText: 'Cari nama jenazah',
+                    GestureDetector(
+                      onTap: () {
+                        showSearch(
+                          context: context,
+                          delegate: CariJenazah(),
+                        );
+                      },
+                      child: SizedBox(
+                        width: 700,
+                        height: 60,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Get.isDarkMode
+                                ? Colors.grey.shade900
+                                : Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Cari nama jenazah..',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -57,12 +83,12 @@ class LamanUtamaView extends StatelessWidget {
                             height: 400,
                             width: 700,
                             child: CardSwiper(
-                              cardsCount: _controller.cards.length,
+                              cardsCount: _controller.cards().length,
                               isHorizontalSwipingEnabled: false,
                               isVerticalSwipingEnabled: true,
                               numberOfCardsDisplayed: 3,
                               cardBuilder: (context, index) {
-                                return _controller.cards[index];
+                                return _controller.cards()[index];
                               },
                             ),
                           ),

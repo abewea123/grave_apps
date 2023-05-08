@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class KadArwah extends StatelessWidget {
   final String nama;
@@ -22,11 +23,13 @@ class KadArwah extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: Get.isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Get.isDarkMode
+                ? Colors.transparent
+                : Colors.grey.withOpacity(0.2),
             spreadRadius: 3,
             blurRadius: 5,
             offset: const Offset(0, 9), // changes position of shadow
@@ -40,8 +43,11 @@ class KadArwah extends StatelessWidget {
           children: [
             Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 30,
+                  backgroundColor: Get.isDarkMode
+                      ? Theme.of(context).colorScheme.secondaryContainer
+                      : Theme.of(context).colorScheme.secondary,
                 ),
                 const SizedBox(width: 20),
                 Expanded(
@@ -119,19 +125,19 @@ class KadArwah extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            Center(
-              child: SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.location_on),
-                  label: const Text(
-                    'Lokasi',
-                  ),
-                ),
-              ),
-            ),
+            // Center(
+            //   child: SizedBox(
+            //     height: 50,
+            //     width: double.infinity,
+            //     child: ElevatedButton.icon(
+            //       onPressed: () {},
+            //       icon: const Icon(Icons.location_on),
+            //       label: const Text(
+            //         'Lokasi',
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/home/page/laman_utama.dart';
@@ -7,28 +8,53 @@ import 'package:grave_apps/home/page/tetapan_view.dart';
 import 'controller/home_controller.dart';
 
 class Home extends StatelessWidget {
-  const Home({
-    super.key,
-    required HomeController controller,
-  }) : _controller = controller;
-
-  final HomeController _controller;
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     return Scaffold(
-      body: Obx(() => IndexedStack(
-            index: _controller.index.value,
-            children: [
-              LamanUtamaView(controller: _controller),
-              const PengurusanJenazahView(),
-              const TetapanView(),
-            ],
-          )),
+      body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.userChanges(),
+          builder: (context, snapshot) {
+            User? user = snapshot.data;
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
+
+            if (user == null) {
+              debugPrint('User has been logout! Sign in anonymous');
+
+              FirebaseAuth.instance.signInAnonymously();
+              return SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    Text('Melaraskan data...'),
+                    SizedBox(height: 10),
+                    CircularProgressIndicator.adaptive(),
+                  ],
+                ),
+              );
+            }
+            return Obx(() => IndexedStack(
+                  index: controller.index.value,
+                  children: [
+                    LamanUtamaView(controller: controller),
+                    PengurusanJenazahView(user: user),
+                    TetapanView(user: user),
+                  ],
+                ));
+          }),
       bottomNavigationBar: Obx(
         () => NavigationBar(
-          onDestinationSelected: (value) => _controller.index.value = value,
-          selectedIndex: _controller.index.value,
+          onDestinationSelected: (value) => controller.index.value = value,
+          selectedIndex: controller.index.value,
           destinations: [
             const NavigationDestination(
               icon: Icon(Icons.home_outlined),
