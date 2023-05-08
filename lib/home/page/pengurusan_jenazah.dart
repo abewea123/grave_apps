@@ -6,8 +6,21 @@ import 'package:get/get.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/model/pengurusan_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controller/home_controller.dart';
+
+extension StringExtension on String {
+  String capitalizeByWord() {
+    if (trim().isEmpty) {
+      return '';
+    }
+    return split(' ')
+        .map((element) =>
+            "${element[0].toUpperCase()}${element.substring(1).toLowerCase()}")
+        .join(" ");
+  }
+}
 
 class PengurusanJenazahView extends StatelessWidget {
   final User? user;
@@ -72,7 +85,9 @@ class PengurusanJenazahView extends StatelessWidget {
                             final pengurusan = Pengurusan.fromRealtime(docs);
                             return ListTile(
                               title: Text(pengurusan.nama.toString()),
-                              subtitle: Text(pengurusan.jawatan.toString()),
+                              subtitle: Text(pengurusan.jawatan
+                                  .toString()
+                                  .capitalizeByWord()),
                               onTap: () {
                                 Haptic.feedbackSuccess();
                                 showBottom(context, pengurusan);
@@ -118,61 +133,44 @@ class PengurusanJenazahView extends StatelessWidget {
                     fontSize: 25,
                   ),
                 ),
-                // const SizedBox(height: 5),
                 Text(
-                  pengurusan.jawatan.toString(),
+                  pengurusan.jawatan.toString().capitalizeByWord(),
                   style: const TextStyle(color: Colors.grey, fontSize: 18),
                 ),
                 const SizedBox(height: 20),
                 const Divider(),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Icon(
-                        Icons.mosque,
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    Expanded(
-                      flex: 4,
-                      child: Text(
-                        pengurusan.kawasanQariah,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
+                ListTile(
+                  title: Text(
+                      pengurusan.kawasanQariah.toString().capitalizeByWord()),
+                  leading: Icon(
+                    Icons.mosque,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Icon(
-                        Icons.email,
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                    ),
-                    const SizedBox(width: 30),
-                    Expanded(
-                      flex: 4,
-                      child: Text(
-                        pengurusan.email,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
+                ListTile(
+                  title: Text(pengurusan.email.toString()),
+                  leading: Icon(
+                    Icons.email,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton.icon(
-                      onPressed: () {
-                        Haptic.feedbackClick();
-                      },
+                      onPressed: () => _homeController.callPengurusan(
+                          pengurusan.noPhone.toString(), context),
+                      // onPressed: () async {
+                      //   Haptic.feedbackClick();
+                      //   const code = '+60';
+                      //   final Uri launchUri = Uri(
+                      //     scheme: 'tel',
+                      //     path: '$code${pengurusan.noPhone}',
+                      //   );
+                      //   await launchUrl(launchUri);
+                      // },
                       icon: const Icon(Icons.call),
                       label: const Text('Hubungi')),
                 ),

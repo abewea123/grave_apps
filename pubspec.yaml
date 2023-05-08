@@ -37,6 +37,7 @@ dependencies:
   image_cropper: ^3.0.3
   path: 
   crop_image: ^1.0.6
+  url_launcher: ^6.1.10
 
 
 dev_dependencies:
