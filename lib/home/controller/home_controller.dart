@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/toast_view.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:universal_html/html.dart' as html;
 import '../model/jenazah_model.dart';
 import '../widget/kad_arwah.dart';
 
@@ -48,15 +48,19 @@ class HomeController extends GetxController {
     final url = GetPlatform.isAndroid
         ? "whatsapp://send?phone=$phone&text=Salam"
         : "https://wa.me/$phone/?text=Salam";
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+    if (GetPlatform.isWeb) {
+      html.window.open(url, 'WhatsApp');
     } else {
-      Get.back();
-      if (context.mounted) {
-        ToastView.error(context,
-            title: 'Kesalahan telah berlaku!',
-            subtitle: 'Gagal untuk mengakses WhatsApp',
-            icon: Icons.close);
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        Get.back();
+        if (context.mounted) {
+          ToastView.error(context,
+              title: 'Kesalahan telah berlaku!',
+              subtitle: 'Gagal untuk mengakses WhatsApp',
+              icon: Icons.close);
+        }
       }
     }
   }
@@ -64,64 +68,68 @@ class HomeController extends GetxController {
   void launchCaller(String noFon, BuildContext context) async {
     Get.back();
     final url = "tel:$noFon";
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+    if (GetPlatform.isWeb) {
+      html.window.open(url, 'Call');
     } else {
-      Get.back();
-      if (context.mounted) {
-        ToastView.error(context,
-            title: 'Kesalahan telah berlaku!',
-            subtitle: 'Gagal untuk mengakses WhatsApp',
-            icon: Icons.close);
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        Get.back();
+        if (context.mounted) {
+          ToastView.error(context,
+              title: 'Kesalahan telah berlaku!',
+              subtitle: 'Gagal untuk mengakses WhatsApp',
+              icon: Icons.close);
+        }
       }
     }
   }
 
   List<Jenazah> jenazah = [
-    Jenazah(
-      nama: 'Adlan Khayran',
-      tempatTinggal: 'Kajang, Selangor',
-      lotKubur: '0112',
-      nota: '',
-      profileImage: '',
-      latitude: 0,
-      longitude: 0,
-      tarikhLahir: DateTime.now(),
-      tarikhMeninggal: DateTime.now(),
-    ),
-    Jenazah(
-      nama: 'Ali Bin Abu',
-      tempatTinggal: 'Seri Kembangan, Selangor',
-      lotKubur: '0113',
-      nota: '',
-      profileImage: '',
-      latitude: 0,
-      longitude: 0,
-      tarikhLahir: DateTime.now(),
-      tarikhMeninggal: DateTime.now(),
-    ),
-    Jenazah(
-      nama: 'Ahmad Albab',
-      tempatTinggal: 'Isketambola, Pasir Berdengung',
-      lotKubur: '0114',
-      nota: 'Arwah kedekut orangnya',
-      profileImage: '',
-      latitude: 0,
-      longitude: 0,
-      tarikhLahir: DateTime.now(),
-      tarikhMeninggal: DateTime.now(),
-    ),
-    Jenazah(
-      nama: 'Abdullah',
-      tempatTinggal: 'Pasir Mas, Kelantan',
-      lotKubur: '0115',
-      nota: '',
-      profileImage: '',
-      latitude: 0,
-      longitude: 0,
-      tarikhLahir: DateTime.now(),
-      tarikhMeninggal: DateTime.now(),
-    ),
+    // Jenazah(
+    //   nama: 'Adlan Khayran',
+    //   tempatTinggal: 'Kajang, Selangor',
+    //   lotKubur: '0112',
+    //   nota: '',
+    //   profileImage: '',
+    //   latitude: 0,
+    //   longitude: 0,
+    //   tarikhLahir: DateTime.now(),
+    //   tarikhMeninggal: DateTime.now(),
+    // ),
+    // Jenazah(
+    //   nama: 'Ali Bin Abu',
+    //   tempatTinggal: 'Seri Kembangan, Selangor',
+    //   lotKubur: '0113',
+    //   nota: '',
+    //   profileImage: '',
+    //   latitude: 0,
+    //   longitude: 0,
+    //   tarikhLahir: DateTime.now(),
+    //   tarikhMeninggal: DateTime.now(),
+    // ),
+    // Jenazah(
+    //   nama: 'Ahmad Albab',
+    //   tempatTinggal: 'Isketambola, Pasir Berdengung',
+    //   lotKubur: '0114',
+    //   nota: 'Arwah kedekut orangnya',
+    //   profileImage: '',
+    //   latitude: 0,
+    //   longitude: 0,
+    //   tarikhLahir: DateTime.now(),
+    //   tarikhMeninggal: DateTime.now(),
+    // ),
+    // Jenazah(
+    //   nama: 'Abdullah',
+    //   tempatTinggal: 'Pasir Mas, Kelantan',
+    //   lotKubur: '0115',
+    //   nota: '',
+    //   profileImage: '',
+    //   latitude: 0,
+    //   longitude: 0,
+    //   tarikhLahir: DateTime.now(),
+    //   tarikhMeninggal: DateTime.now(),
+    // ),
   ];
 
   List<KadArwah> cards() {

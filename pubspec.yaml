@@ -13,10 +13,10 @@ dependencies:
 
   #UI
   cupertino_icons: ^1.0.2
-  flutter_card_swiper: ^4.1.0+2
   dynamic_color: ^1.6.3
   achievement_view: ^1.0.0
   dotted_border: ^2.0.0+3
+  card_swiper: ^2.0.4
 
   #State Management
   get: ^4.6.5
@@ -38,7 +38,7 @@ dependencies:
   path: 
   crop_image: ^1.0.6
   url_launcher: ^6.1.10
-
+  intl: 
 
 dev_dependencies:
   flutter_test:

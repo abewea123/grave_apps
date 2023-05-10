@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/controller/search_controller.dart';
-
+import 'package:card_swiper/card_swiper.dart';
 import '../controller/home_controller.dart';
 
 class LamanUtamaView extends StatelessWidget {
@@ -19,6 +19,12 @@ class LamanUtamaView extends StatelessWidget {
       slivers: [
         SliverAppBar.large(
           title: const Text('Laman Utama'),
+          actions: [
+            IconButton(
+              onPressed: () => Get.toNamed(MyRoutes.tambahRekod),
+              icon: const Icon(Icons.add),
+            ),
+          ],
         ),
         SliverList(
           delegate: SliverChildListDelegate(
@@ -61,41 +67,32 @@ class LamanUtamaView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Stack(
-                      alignment: AlignmentDirectional.topStart,
-                      children: [
-                        const Positioned.fill(
-                          top: 300,
-                          bottom: 0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Berikut adalah nama jenazah yang baru dikebumikan',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          child: SizedBox(
-                            height: 400,
-                            width: 700,
-                            child: CardSwiper(
-                              cardsCount: _controller.cards().length,
-                              isHorizontalSwipingEnabled: false,
-                              isVerticalSwipingEnabled: true,
-                              numberOfCardsDisplayed: 3,
-                              cardBuilder: (context, index) {
-                                return _controller.cards()[index];
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 590),
-                      ],
+                    Swiper(
+                      itemCount: _controller.jenazah.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _controller.cards()[index];
+                      },
+                      layout: SwiperLayout.TINDER,
+                      itemWidth: 500,
+                      itemHeight: 380,
                     ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Berikut adalah 5 senarai rekod  jenazah yang baru dikebumikan',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      height: 50,
+                      width: 300,
+                      child: ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.list_alt),
+                        label: const Text('Semua Rekod'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
