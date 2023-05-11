@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -77,6 +78,32 @@ class ControllerAddPengurusan extends GetxController {
     if (file == null) return;
     imageFile = File(file.path);
     update();
+  }
+
+  void chooseImageMac(BuildContext context) async {
+    try {
+      FilePickerResult? picker =
+          await FilePicker.platform.pickFiles(type: FileType.image);
+      if (picker != null) {
+        final String? path = picker.files.single.path;
+        final String? extension = picker.files.single.extension;
+        if (path != null && extension != null) {
+          imageFile = File(path);
+          fileName.value = picker.files.single.name;
+          fileExtension = extension;
+        }
+        update();
+      }
+    } on Exception catch (e) {
+      imageFile = File('');
+      fileName.value = '';
+      fileExtension = '';
+      ToastView.error(context,
+          title: 'Kesalahan Telah Berlaku',
+          subtitle: 'Kesalahan: $e',
+          icon: Icons.error);
+      update();
+    }
   }
 
   void chooseImageWeb(BuildContext context) async {
@@ -170,13 +197,13 @@ class ControllerAddPengurusan extends GetxController {
                     Get.dialog(
                       BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                        child: AlertDialog(
-                          icon: const Icon(Icons.person_add),
+                        child: const AlertDialog(
+                          icon: Icon(Icons.person_add),
                           content: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
+                            children: [
                               Text('Memuat naik data...'),
                               SizedBox(height: 10),
                               CircularProgressIndicator.adaptive(),

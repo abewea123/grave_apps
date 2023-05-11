@@ -75,11 +75,11 @@ class CariJenazah extends SearchDelegate {
     List suggestion = _getList();
 
     return query.isEmpty
-        ? Center(
+        ? const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(
                   Icons.person_search,
                   size: 120,

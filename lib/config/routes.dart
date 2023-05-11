@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:grave_apps/home/view_home.dart';
 import 'package:grave_apps/login/view/login_view.dart';
 import 'package:grave_apps/pengurusan/view/view_add_pengurusan.dart';
-import 'package:grave_apps/rekod/tambah_rekod_jenazah.dart';
+import 'package:grave_apps/rekod/view/view_tambah_rekod_jenazah.dart';
 
 class MyRoutes {
   static const home = '/home';

@@ -2,8 +2,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../config/haptic_feedback.dart';
-import 'controller/controller_add_record.dart';
+import '../../config/haptic_feedback.dart';
+import '../controller/controller_add_record.dart';
 
 class ViewAddJenazah extends StatelessWidget {
   ViewAddJenazah({super.key});
@@ -131,10 +131,11 @@ class ViewAddJenazah extends StatelessWidget {
                   TextFormField(
                     controller: _controller.lokasiKuburText,
                     textInputAction: TextInputAction.next,
+                    maxLines: 2,
                     readOnly: true,
-                    onTap: () {},
+                    onTap: () => _controller.chooseLocation(context),
                     decoration: const InputDecoration(
-                      hintText: '2,31231 : 5,32234',
+                      hintText: 'Lat: 2,31231\nLong: 5,32234',
                       label: Text('Lokasi Kubur'),
                       icon: Icon(Icons.person_pin_circle),
                     ),

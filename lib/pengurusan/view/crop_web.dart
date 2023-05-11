@@ -49,12 +49,12 @@ class _CropWebState extends State<CropWeb> {
                 Get.dialog(
                   BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: AlertDialog(
+                    child: const AlertDialog(
                       content: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Text('Menyediakan gambar...'),
                           SizedBox(height: 10),
                           CircularProgressIndicator.adaptive()

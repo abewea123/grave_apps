@@ -33,11 +33,11 @@ class LoginController extends GetxController {
       Get.dialog(
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-          child: AlertDialog(
-            icon: const Icon(Icons.login),
+          child: const AlertDialog(
+            icon: Icon(Icons.login),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 Text('Sila tunggu sebentar...'),
                 SizedBox(height: 10),
                 CircularProgressIndicator.adaptive(),

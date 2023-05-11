@@ -200,9 +200,15 @@ class ViewAddPengurusan extends StatelessWidget {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(5)),
                               child: InkWell(
-                                onTap: () => GetPlatform.isWeb
-                                    ? _addPengurusan.chooseImageWeb(context)
-                                    : _addPengurusan.chooseImage(context),
+                                onTap: () {
+                                  if (GetPlatform.isWeb) {
+                                    _addPengurusan.chooseImageWeb(context);
+                                  } else if (GetPlatform.isMacOS) {
+                                    _addPengurusan.chooseImageMac(context);
+                                  } else {
+                                    _addPengurusan.chooseImage(context);
+                                  }
+                                },
                                 child: Ink(
                                   height: 80,
                                   width: double.infinity,

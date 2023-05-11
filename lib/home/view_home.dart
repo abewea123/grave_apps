@@ -29,12 +29,12 @@ class Home extends StatelessWidget {
               debugPrint('User has been logout! Sign in anonymous');
 
               FirebaseAuth.instance.signInAnonymously();
-              return SizedBox(
+              return const SizedBox(
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text('Melaraskan data...'),
                     SizedBox(height: 10),
                     CircularProgressIndicator.adaptive(),

@@ -60,13 +60,13 @@ class PengurusanJenazahView extends StatelessWidget {
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SliverFillRemaining(
+                    return const SliverFillRemaining(
                       child: Align(
                         alignment: Alignment.center,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text('Memuat naik...'),
                             SizedBox(height: 10),
                             CircularProgressIndicator.adaptive(),
