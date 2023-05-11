@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
@@ -11,8 +13,18 @@ import '../widget/kad_arwah.dart';
 
 class HomeController extends GetxController {
   final searchInput = TextEditingController();
+  Stream<User?>? userChange;
+  Stream<QuerySnapshot>? pengurusan;
   var index = 0.obs;
   var fabScrollPengurusan = true.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    userChange = FirebaseAuth.instance.userChanges();
+    pengurusan =
+        FirebaseFirestore.instance.collection('pengurusan').snapshots();
+  }
 
   void callPengurusan(String phone, BuildContext context) {
     const code = '+60';

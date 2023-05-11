@@ -54,9 +54,7 @@ class PengurusanJenazahView extends StatelessWidget {
               title: const Text('Pengurusan'),
             ),
             StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('pengurusan')
-                    .snapshots(),
+                stream: _homeController.pengurusan,
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
