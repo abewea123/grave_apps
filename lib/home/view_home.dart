@@ -80,7 +80,7 @@ class Home extends StatelessWidget {
                   child: Obx(() => IndexedStack(
                         index: controller.index.value,
                         children: [
-                          LamanUtamaView(controller: controller),
+                          LamanUtamaView(controller: controller, user: user),
                           PengurusanJenazahView(user: user),
                           TetapanView(user: user),
                         ],

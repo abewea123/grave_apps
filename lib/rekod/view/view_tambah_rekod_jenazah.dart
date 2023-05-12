@@ -1,4 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,9 +11,11 @@ class ViewAddJenazah extends StatelessWidget {
   ViewAddJenazah({super.key});
 
   final _controller = Get.put(AddRecordController());
+  final _arguments = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
+    User? user = _arguments['user'];
     return Scaffold(
       body: SingleChildScrollView(
         child: Form(
@@ -73,6 +77,12 @@ class ViewAddJenazah extends StatelessWidget {
                       label: Text('Nama Jenazah'),
                       icon: Icon(Icons.person),
                     ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Sila masukkan nama jenazah';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -84,6 +94,12 @@ class ViewAddJenazah extends StatelessWidget {
                       label: Text('Tempat Tinggal'),
                       icon: Icon(Icons.map),
                     ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Sila masukkan tempat tinggal jenazah';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -96,6 +112,12 @@ class ViewAddJenazah extends StatelessWidget {
                       label: Text('Tarikh Lahir'),
                       icon: Icon(Icons.timer),
                     ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Sila masukkan tarikh lahir lahir';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -108,6 +130,12 @@ class ViewAddJenazah extends StatelessWidget {
                       label: Text('Tarikh Meninggal'),
                       icon: Icon(Icons.access_time_filled_rounded),
                     ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Sila masukkan tarikh meninggal jenazah';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -126,6 +154,12 @@ class ViewAddJenazah extends StatelessWidget {
                       label: Text('Lot Kubur'),
                       icon: Icon(Icons.approval_sharp),
                     ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Sila masukkan lot kubur jenazah';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
@@ -139,10 +173,16 @@ class ViewAddJenazah extends StatelessWidget {
                       label: Text('Lokasi Kubur'),
                       icon: Icon(Icons.person_pin_circle),
                     ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Sila berikan lokasi kordinat kubur jenazah';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    controller: _controller.lotKuburText,
+                    controller: _controller.notesText,
                     textInputAction: TextInputAction.next,
                     maxLines: 3,
                     decoration: const InputDecoration(
@@ -164,9 +204,15 @@ class ViewAddJenazah extends StatelessWidget {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(5)),
                         child: InkWell(
-                          // onTap: () => GetPlatform.isWeb
-                          //     ? _addPengurusan.chooseImageWeb(context)
-                          //     : _addPengurusan.chooseImage(context),
+                          onTap: () {
+                            if (GetPlatform.isWeb) {
+                              _controller.chooseImageWeb(context);
+                            } else if (GetPlatform.isMacOS) {
+                              _controller.chooseImageMac(context);
+                            } else {
+                              _controller.chooseImage(context);
+                            }
+                          },
                           child: Ink(
                             height: 80,
                             width: double.infinity,
@@ -181,20 +227,38 @@ class ViewAddJenazah extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       flex: 1,
-                                      child: CircleAvatar(
-                                          radius: 30,
-                                          child: Icon(
-                                            Icons.upload,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSecondaryContainer,
-                                          )),
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                        ),
+                                        child: _controller.fileName.value == ''
+                                            ? Icon(
+                                                Icons.upload,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSecondaryContainer,
+                                              )
+                                            : GetPlatform.isWeb
+                                                ? Image.memory(
+                                                    _controller.webImage)
+                                                : Image.file(
+                                                    _controller.imageFile,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                      ),
                                     ),
                                     const SizedBox(width: 30),
                                     Expanded(
                                       flex: 5,
                                       child: Text(
-                                        'Muat naik gambar kubur',
+                                        _controller.fileName.value == ''
+                                            ? 'Muat naik gambar kubur'
+                                            : _controller.fileName.value,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           color: Theme.of(context)
@@ -216,10 +280,40 @@ class ViewAddJenazah extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: const Text('Tambah Rekod'),
+                      child: Text(user!.isAnonymous
+                          ? 'Meminta Tambah Rekod'
+                          : 'Tambah Rekod'),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  _controller.lokasiKuburText.text.isEmpty
+                      ? const SizedBox()
+                      : const SizedBox(height: 20),
+                  _controller.lokasiKuburText.text.isEmpty
+                      ? const SizedBox()
+                      : Obx(() => Text.rich(
+                            TextSpan(
+                              text: _controller.alamatCode.value != ''
+                                  ? '${_controller.alamatCode.value}.\n'
+                                  : 'Kordinat lokasi kubur tidak dapat diterjemah.\n',
+                              style: const TextStyle(color: Colors.grey),
+                              children: [
+                                TextSpan(
+                                  text: ' Klik sini ',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => _controller.openMap(),
+                                ),
+                                const TextSpan(
+                                    text:
+                                        'untuk melihat kordinasi lokasi kubur dari aplikasi Peta'),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          )),
+                  const SizedBox(height: 20),
                 ],
               );
             }),

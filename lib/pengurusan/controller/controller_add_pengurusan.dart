@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/toast_view.dart';
 import 'package:grave_apps/home/model/pengurusan_model.dart';
+import 'package:grave_apps/pengurusan/view/crop_mac.dart';
 import 'package:path/path.dart' as p;
 import 'package:grave_apps/pengurusan/view/crop_web.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -88,9 +89,17 @@ class ControllerAddPengurusan extends GetxController {
         final String? path = picker.files.single.path;
         final String? extension = picker.files.single.extension;
         if (path != null && extension != null) {
-          imageFile = File(path);
-          fileName.value = picker.files.single.name;
-          fileExtension = extension;
+          File imageRaw = File(path);
+
+          File? resultImage =
+              await Get.to<File>(() => CropMac(image: imageRaw));
+
+          if (resultImage != null) {
+            imageFile = File(resultImage.path);
+            fileName.value = picker.files.single.name;
+            fileExtension = extension;
+            update();
+          }
         }
         update();
       }

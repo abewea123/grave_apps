@@ -6,6 +6,7 @@ class Jenazah {
   final String profileImage;
   final double latitude;
   final double longitude;
+  final bool approve;
   final DateTime tarikhLahir;
   final DateTime tarikhMeninggal;
   final DateTime kemaskini;
@@ -18,6 +19,7 @@ class Jenazah {
       required this.profileImage,
       required this.latitude,
       required this.longitude,
+      required this.approve,
       required this.tarikhLahir,
       required this.tarikhMeninggal,
       required this.kemaskini});
@@ -30,6 +32,7 @@ class Jenazah {
         nota: json['nota'],
         profileImage: json['profileImage'],
         latitude: json['latitude'],
+        approve: json['approve'],
         longitude: json['longitude'],
         tarikhLahir: json['tarikhLahir'],
         tarikhMeninggal: json['tarikhMeninggal'],

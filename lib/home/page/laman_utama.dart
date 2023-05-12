@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/routes.dart';
@@ -6,9 +7,11 @@ import 'package:card_swiper/card_swiper.dart';
 import '../controller/home_controller.dart';
 
 class LamanUtamaView extends StatelessWidget {
+  final User? user;
   const LamanUtamaView({
     super.key,
     required HomeController controller,
+    required this.user,
   }) : _controller = controller;
 
   final HomeController _controller;
@@ -21,7 +24,11 @@ class LamanUtamaView extends StatelessWidget {
           title: const Text('Laman Utama'),
           actions: [
             IconButton(
-              onPressed: () => Get.toNamed(MyRoutes.tambahRekod),
+              onPressed: () {
+                Get.toNamed(MyRoutes.tambahRekod, arguments: {
+                  'user': user,
+                });
+              },
               icon: const Icon(Icons.add),
             ),
           ],
