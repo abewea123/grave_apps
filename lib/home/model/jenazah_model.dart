@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Jenazah {
   final String nama;
   final String tempatTinggal;
   final String lotKubur;
   final String nota;
-  final String profileImage;
-  final double latitude;
-  final double longitude;
+  final String gambarKubur;
+  final GeoPoint geoPoint;
   final bool approve;
   final DateTime tarikhLahir;
   final DateTime tarikhMeninggal;
@@ -16,9 +17,8 @@ class Jenazah {
       required this.tempatTinggal,
       required this.lotKubur,
       required this.nota,
-      required this.profileImage,
-      required this.latitude,
-      required this.longitude,
+      required this.gambarKubur,
+      required this.geoPoint,
       required this.approve,
       required this.tarikhLahir,
       required this.tarikhMeninggal,
@@ -30,13 +30,13 @@ class Jenazah {
         tempatTinggal: json['tempatTinggal'],
         lotKubur: json['lotKubur'],
         nota: json['nota'],
-        profileImage: json['profileImage'],
-        latitude: json['latitude'],
+        gambarKubur: json['gambarKubur'],
+        geoPoint: json['geoPoint'] as GeoPoint,
         approve: json['approve'],
-        longitude: json['longitude'],
-        tarikhLahir: json['tarikhLahir'],
-        tarikhMeninggal: json['tarikhMeninggal'],
-        kemaskini: json['kemaskini']);
+        tarikhLahir: DateTime.parse(json['tarikhLahir'].toDate().toString()),
+        tarikhMeninggal:
+            DateTime.parse(json['tarikhMeninggal'].toDate().toString()),
+        kemaskini: DateTime.parse(json['kemaskini'].toDate().toString()));
   }
 
   Map<String, dynamic> toFirestore() => {
@@ -44,9 +44,9 @@ class Jenazah {
         'tempatTinggal': tempatTinggal,
         'lotKubur': lotKubur,
         'nota': nota,
-        'profileImage': profileImage,
-        'latitude': latitude,
-        'longitude': longitude,
+        'gambarKubur': gambarKubur,
+        'geoPoint': geoPoint,
+        'approve': approve,
         'tarikhLahir': tarikhLahir,
         'tarikhMeninggal': tarikhMeninggal,
         'kemaskini': kemaskini

@@ -150,12 +150,7 @@ class HomeController extends GetxController {
     for (var kadArwah in jenazah) {
       kad.add(
         KadArwah(
-          nama: kadArwah.nama,
-          alamat: kadArwah.tempatTinggal,
-          tarikhLahir: kadArwah.tarikhLahir.toString(),
-          tarikhMeninggal: kadArwah.tarikhMeninggal.toString(),
-          lotKubur: kadArwah.lotKubur,
-          nota: kadArwah.nota,
+          jenazah: kadArwah,
         ),
       );
     }

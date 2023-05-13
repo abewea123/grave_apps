@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/controller/search_controller.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:grave_apps/home/model/jenazah_model.dart';
 import '../controller/home_controller.dart';
 
 class LamanUtamaView extends StatelessWidget {
@@ -74,32 +76,58 @@ class LamanUtamaView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Swiper(
-                      itemCount: _controller.jenazah.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return _controller.cards()[index];
-                      },
-                      layout: SwiperLayout.TINDER,
-                      itemWidth: 500,
-                      itemHeight: 380,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'Berikut adalah 5 senarai rekod  jenazah yang baru dikebumikan',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 30),
-                    SizedBox(
-                      height: 50,
-                      width: 300,
-                      child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.list_alt),
-                        label: const Text('Semua Rekod'),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: FirebaseFirestore.instance
+                            .collection('jenazah')
+                            .snapshots(),
+                        builder:
+                            (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator.adaptive();
+                          }
+
+                          if (snapshot.hasData) {
+                            _controller.jenazah = snapshot.data!.docs
+                                .map((docs) => Jenazah.fromFirestore(docs))
+                                .toList();
+
+                            int length = _controller.jenazah.length;
+                            return Column(
+                              children: [
+                                Swiper(
+                                  itemCount: length <= 5 ? length : 5,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return _controller.cards()[index];
+                                  },
+                                  layout: SwiperLayout.TINDER,
+                                  itemWidth: 500,
+                                  loop: length == 1 ? false : true,
+                                  itemHeight: 380,
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Berikut adalah $length senarai rekod  jenazah yang baru dikebumikan',
+                                  style: const TextStyle(color: Colors.grey),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 30),
+                                SizedBox(
+                                  height: 50,
+                                  width: 300,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.list_alt),
+                                    label: const Text('Semua Rekod'),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            );
+                          }
+                          return const SizedBox();
+                        }),
                   ],
                 ),
               ),

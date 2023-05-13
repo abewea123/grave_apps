@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import '../model/jenazah_model.dart';
 
 class KadArwah extends StatelessWidget {
-  final String nama;
-  final String alamat;
-  final String tarikhLahir;
-  final String tarikhMeninggal;
-  final String lotKubur;
-  final String nota;
+  final Jenazah jenazah;
   const KadArwah({
     super.key,
-    required this.nama,
-    required this.alamat,
-    required this.tarikhLahir,
-    required this.tarikhMeninggal,
-    required this.lotKubur,
-    required this.nota,
+    required this.jenazah,
   });
 
   @override
@@ -35,9 +28,7 @@ class KadArwah extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: Get.isDarkMode
-                      ? Theme.of(context).colorScheme.secondaryContainer
-                      : Theme.of(context).colorScheme.secondary,
+                  backgroundImage: NetworkImage(jenazah.gambarKubur),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
@@ -45,13 +36,13 @@ class KadArwah extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        nama,
+                        jenazah.nama,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        alamat,
+                        jenazah.tempatTinggal,
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -65,7 +56,8 @@ class KadArwah extends StatelessWidget {
                 text: 'Tarikh Lahir: ',
                 children: [
                   TextSpan(
-                      text: tarikhLahir,
+                      text: DateFormat('dd MMMM yyyy')
+                          .format(jenazah.tarikhLahir),
                       style: const TextStyle(color: Colors.grey)),
                 ],
               ),
@@ -76,7 +68,8 @@ class KadArwah extends StatelessWidget {
                 text: 'Tarikh Meninggal: ',
                 children: [
                   TextSpan(
-                      text: tarikhMeninggal,
+                      text: DateFormat('dd MMMM yyyy')
+                          .format(jenazah.tarikhMeninggal),
                       style: const TextStyle(color: Colors.grey)),
                 ],
               ),
@@ -87,7 +80,8 @@ class KadArwah extends StatelessWidget {
                 text: 'Tempat Tinggal: ',
                 children: [
                   TextSpan(
-                      text: alamat, style: const TextStyle(color: Colors.grey)),
+                      text: jenazah.tempatTinggal,
+                      style: const TextStyle(color: Colors.grey)),
                 ],
               ),
             ),
@@ -97,7 +91,7 @@ class KadArwah extends StatelessWidget {
                 text: 'Lot Kubur: ',
                 children: [
                   TextSpan(
-                      text: lotKubur,
+                      text: jenazah.lotKubur,
                       style: const TextStyle(color: Colors.grey)),
                 ],
               ),
@@ -108,7 +102,7 @@ class KadArwah extends StatelessWidget {
                 text: 'Nota: ',
                 children: [
                   TextSpan(
-                    text: nota,
+                    text: jenazah.nota,
                     style: const TextStyle(color: Colors.grey),
                   ),
                 ],
