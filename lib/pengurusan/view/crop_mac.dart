@@ -1,19 +1,20 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:crop_image/crop_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 
-class CropWeb extends StatefulWidget {
-  final Uint8List? image;
-  const CropWeb({super.key, required this.image});
+class CropMac extends StatefulWidget {
+  final File image;
+  const CropMac({super.key, required this.image});
 
   @override
-  State<CropWeb> createState() => _CropWebState();
+  State<CropMac> createState() => _CropMacState();
 }
 
-class _CropWebState extends State<CropWeb> {
+class _CropMacState extends State<CropMac> {
   final _cropController = CropController(
     aspectRatio: 1,
     defaultCrop: const Rect.fromLTRB(0.05, 0.05, 0.95, 0.95),
@@ -65,61 +66,57 @@ class _CropWebState extends State<CropWeb> {
                   barrierDismissible: false,
                 );
                 await Future.delayed(const Duration(seconds: 1));
-                final bitmap = await _cropController.croppedBitmap();
+                final image = await _cropController.croppedBitmap();
                 final data =
-                    await bitmap.toByteData(format: ImageByteFormat.png);
-                final result = data!.buffer.asUint8List();
+                    await image.toByteData(format: ImageByteFormat.png);
+                final Directory tempDir = await getTemporaryDirectory();
+
+                final bytes = data!.buffer.asUint8List();
+                File? loc = await widget.image.copy('${tempDir.path}/temp.png');
+
+                File? file = await loc.writeAsBytes(bytes);
                 Get.back();
-                Get.back(result: result);
+                Get.back(result: file);
               },
               icon: const Icon(Icons.done),
             ),
           ],
         ),
-        body: widget.image == null
-            ? const Center(
-                child: Text(
-                  'Tiada gambar ditemui!',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              )
-            : Center(
-                child: CropImage(
-                  controller: _cropController,
-                  image: Image.memory(widget.image!),
-                  paddingSize: 12.0,
-                  alwaysMove: true,
-                ),
+        body: Center(
+          child: CropImage(
+            controller: _cropController,
+            image: Image.file(widget.image),
+            paddingSize: 12.0,
+            alwaysMove: true,
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          height: 70,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () {
+                  _cropController.rotateLeft();
+                },
+                icon: const Icon(Icons.rotate_90_degrees_ccw),
               ),
-        bottomNavigationBar: widget.image == null
-            ? null
-            : BottomAppBar(
-                height: 70,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        _cropController.rotateLeft();
-                      },
-                      icon: const Icon(Icons.rotate_90_degrees_ccw),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        _cropController.rotateRight();
-                      },
-                      icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        _cropController.crop =
-                            const Rect.fromLTRB(0.05, 0.05, 0.95, 0.95);
-                      },
-                      icon: const Icon(Icons.crop),
-                    ),
-                  ],
-                ),
+              IconButton(
+                onPressed: () {
+                  _cropController.rotateRight();
+                },
+                icon: const Icon(Icons.rotate_90_degrees_cw_outlined),
               ),
+              IconButton(
+                onPressed: () {
+                  _cropController.crop =
+                      const Rect.fromLTRB(0.05, 0.05, 0.95, 0.95);
+                },
+                icon: const Icon(Icons.crop),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/toast_view.dart';
 import 'package:grave_apps/home/model/pengurusan_model.dart';
+import 'package:grave_apps/pengurusan/view/crop_mac.dart';
 import 'package:path/path.dart' as p;
 import 'package:grave_apps/pengurusan/view/crop_web.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -77,6 +79,40 @@ class ControllerAddPengurusan extends GetxController {
     if (file == null) return;
     imageFile = File(file.path);
     update();
+  }
+
+  void chooseImageMac(BuildContext context) async {
+    try {
+      FilePickerResult? picker =
+          await FilePicker.platform.pickFiles(type: FileType.image);
+      if (picker != null) {
+        final String? path = picker.files.single.path;
+        final String? extension = picker.files.single.extension;
+        if (path != null && extension != null) {
+          File imageRaw = File(path);
+
+          File? resultImage =
+              await Get.to<File>(() => CropMac(image: imageRaw));
+
+          if (resultImage != null) {
+            imageFile = File(resultImage.path);
+            fileName.value = picker.files.single.name;
+            fileExtension = extension;
+            update();
+          }
+        }
+        update();
+      }
+    } on Exception catch (e) {
+      imageFile = File('');
+      fileName.value = '';
+      fileExtension = '';
+      ToastView.error(context,
+          title: 'Kesalahan Telah Berlaku',
+          subtitle: 'Kesalahan: $e',
+          icon: Icons.error);
+      update();
+    }
   }
 
   void chooseImageWeb(BuildContext context) async {
@@ -170,13 +206,13 @@ class ControllerAddPengurusan extends GetxController {
                     Get.dialog(
                       BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                        child: AlertDialog(
-                          icon: const Icon(Icons.person_add),
+                        child: const AlertDialog(
+                          icon: Icon(Icons.person_add),
                           content: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
+                            children: [
                               Text('Memuat naik data...'),
                               SizedBox(height: 10),
                               CircularProgressIndicator.adaptive(),

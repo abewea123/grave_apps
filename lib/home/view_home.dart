@@ -15,7 +15,7 @@ class Home extends StatelessWidget {
     final controller = Get.put(HomeController());
     return Scaffold(
       body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.userChanges(),
+          stream: controller.userChange,
           builder: (context, snapshot) {
             User? user = snapshot.data;
 
@@ -29,12 +29,12 @@ class Home extends StatelessWidget {
               debugPrint('User has been logout! Sign in anonymous');
 
               FirebaseAuth.instance.signInAnonymously();
-              return SizedBox(
+              return const SizedBox(
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text('Melaraskan data...'),
                     SizedBox(height: 10),
                     CircularProgressIndicator.adaptive(),
@@ -42,38 +42,79 @@ class Home extends StatelessWidget {
                 ),
               );
             }
-            return Obx(() => IndexedStack(
-                  index: controller.index.value,
-                  children: [
-                    LamanUtamaView(controller: controller),
-                    PengurusanJenazahView(user: user),
-                    TetapanView(user: user),
-                  ],
-                ));
+            return Row(
+              children: [
+                MediaQuery.of(context).size.width > 800
+                    ? Obx(() => NavigationRail(
+                          minWidth: 80,
+                          extended: MediaQuery.of(context).size.width > 1200
+                              ? true
+                              : false,
+                          useIndicator: true,
+                          destinations: const [
+                            NavigationRailDestination(
+                              icon: Icon(Icons.home_outlined),
+                              selectedIcon: Icon(Icons.home),
+                              label: Text('Laman Utama'),
+                            ),
+                            NavigationRailDestination(
+                              icon: Icon(Icons.manage_accounts),
+                              selectedIcon: Icon(Icons.manage_accounts),
+                              label: Text('Pengurusan'),
+                            ),
+                            NavigationRailDestination(
+                              icon: Icon(Icons.settings_outlined),
+                              selectedIcon: Icon(Icons.settings),
+                              label: Text('Tetapan'),
+                            ),
+                          ],
+                          selectedIndex: controller.index.value,
+                          onDestinationSelected: (value) =>
+                              controller.index.value = value,
+                        ))
+                    : const SizedBox(),
+                MediaQuery.of(context).size.width > 800
+                    ? const VerticalDivider()
+                    : const SizedBox(),
+                Expanded(
+                  child: Obx(() => IndexedStack(
+                        index: controller.index.value,
+                        children: [
+                          LamanUtamaView(controller: controller, user: user),
+                          PengurusanJenazahView(user: user),
+                          TetapanView(user: user),
+                        ],
+                      )),
+                ),
+              ],
+            );
           }),
-      bottomNavigationBar: Obx(
-        () => NavigationBar(
-          onDestinationSelected: (value) => controller.index.value = value,
-          selectedIndex: controller.index.value,
-          destinations: [
-            const NavigationDestination(
-              icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home),
-              label: 'Laman Utama',
-            ),
-            const NavigationDestination(
-              icon: Icon(Icons.manage_accounts),
-              selectedIcon: Icon(Icons.manage_accounts),
-              label: 'Pengurusan',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.settings_outlined),
-              selectedIcon: const Icon(Icons.settings),
-              label: 'Tetapan'.tr,
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: MediaQuery.of(context).size.width < 800
+          ? Obx(
+              () => NavigationBar(
+                onDestinationSelected: (value) =>
+                    controller.index.value = value,
+                selectedIndex: controller.index.value,
+                destinations: [
+                  const NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    selectedIcon: Icon(Icons.home),
+                    label: 'Laman Utama',
+                  ),
+                  const NavigationDestination(
+                    icon: Icon(Icons.manage_accounts),
+                    selectedIcon: Icon(Icons.manage_accounts),
+                    label: 'Pengurusan',
+                  ),
+                  NavigationDestination(
+                    icon: const Icon(Icons.settings_outlined),
+                    selectedIcon: const Icon(Icons.settings),
+                    label: 'Tetapan'.tr,
+                  ),
+                ],
+              ),
+            )
+          : null,
     );
   }
 }

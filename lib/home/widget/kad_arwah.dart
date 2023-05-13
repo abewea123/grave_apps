@@ -25,16 +25,6 @@ class KadArwah extends StatelessWidget {
       decoration: BoxDecoration(
         color: Get.isDarkMode ? Colors.grey.shade900 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Get.isDarkMode
-                ? Colors.transparent
-                : Colors.grey.withOpacity(0.2),
-            spreadRadius: 3,
-            blurRadius: 5,
-            offset: const Offset(0, 9), // changes position of shadow
-          ),
-        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),

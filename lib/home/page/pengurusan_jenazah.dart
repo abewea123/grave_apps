@@ -6,8 +6,6 @@ import 'package:get/get.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/model/pengurusan_model.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../controller/home_controller.dart';
 
 extension StringExtension on String {
@@ -56,19 +54,17 @@ class PengurusanJenazahView extends StatelessWidget {
               title: const Text('Pengurusan'),
             ),
             StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('pengurusan')
-                    .snapshots(),
+                stream: _homeController.pengurusan,
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SliverFillRemaining(
+                    return const SliverFillRemaining(
                       child: Align(
                         alignment: Alignment.center,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text('Memuat naik...'),
                             SizedBox(height: 10),
                             CircularProgressIndicator.adaptive(),
@@ -162,15 +158,6 @@ class PengurusanJenazahView extends StatelessWidget {
                   child: ElevatedButton.icon(
                       onPressed: () => _homeController.callPengurusan(
                           pengurusan.noPhone.toString(), context),
-                      // onPressed: () async {
-                      //   Haptic.feedbackClick();
-                      //   const code = '+60';
-                      //   final Uri launchUri = Uri(
-                      //     scheme: 'tel',
-                      //     path: '$code${pengurusan.noPhone}',
-                      //   );
-                      //   await launchUrl(launchUri);
-                      // },
                       icon: const Icon(Icons.call),
                       label: const Text('Hubungi')),
                 ),
