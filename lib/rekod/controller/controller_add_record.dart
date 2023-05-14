@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:grave_apps/home/model/jenazah_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +33,8 @@ class AddRecordController extends GetxController {
   DateTime tarikhLahir = DateTime.now();
   DateTime tarikhMeninggal = DateTime.now();
 
+  final formkey = GlobalKey<FormState>();
+
   double latitude = 0;
   double longitude = 0;
 
@@ -41,6 +47,103 @@ class AddRecordController extends GetxController {
   var alamatCode = ''.obs;
 
   GeocodeAddress? geocode;
+
+  void confirmationAddDialog(BuildContext context) {
+    if (formkey.currentState!.validate()) {
+      if (fileName.value == '') {
+        Get.dialog(
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: AlertDialog(
+              icon: const Icon(Icons.portrait),
+              title: const Text('Gambar Kubur'),
+              content: const Text('Sila muat naik gambar kubur untuk teruskan'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Haptic.feedbackClick();
+                    Get.back();
+                    if (GetPlatform.isWeb) {
+                      chooseImageWeb(context);
+                    } else if (GetPlatform.isMacOS) {
+                      chooseImageMac(context);
+                    } else {
+                      chooseImage(context);
+                    }
+                  },
+                  child: const Text('Muat naik'),
+                ),
+              ],
+            ),
+          ),
+        );
+      } else {
+        Get.dialog(BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: AlertDialog(
+            icon: const Icon(Icons.list_alt_rounded),
+            title: const Text('Adakah anda pasti?'),
+            content:
+                const Text('Pastikan segala maklumat adalah betul dan tepat!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Haptic.feedbackError();
+                  Get.back();
+                },
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Haptic.feedbackClick();
+                  Get.back();
+                  Get.dialog(
+                    BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: const AlertDialog(
+                        icon: Icon(Icons.person_add),
+                        content: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Memuat naik data...'),
+                            SizedBox(height: 10),
+                            CircularProgressIndicator.adaptive(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                  final success = await _addToFirebase();
+
+                  if (success == true && context.mounted) {
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user!.isAnonymous) {
+                      ToastView.success(context,
+                          title: 'Operasi selesai',
+                          subtitle:
+                              'Rekod jenazah yang anda masukkan akan di semak oleh pihak pengurusan terlebih dahulu sebelum ditambah ke pangkalan data',
+                          icon: Icons.person_add);
+                    } else {
+                      ToastView.success(context,
+                          title: 'Operasi selesai',
+                          subtitle:
+                              'Rekod jenazah telah ditambah ke pangkalan data',
+                          icon: Icons.person_add);
+                    }
+                    Get.back();
+                    Get.back();
+                  }
+                },
+                child: const Text('Pasti'),
+              ),
+            ],
+          ),
+        ));
+      }
+    }
+  }
 
   void tarikhLahirDate(BuildContext context) async {
     Haptic.feedbackClick();
@@ -268,6 +371,48 @@ class AddRecordController extends GetxController {
       alamatCode.value = data['display_name'].toString();
       update();
       Get.back();
+    }
+  }
+
+  Future<bool> _addToFirebase() async {
+    try {
+      final uid = DateTime.now().millisecondsSinceEpoch.toString();
+      String url = '';
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      // 1. Upload gambar to Firebase Storage
+      TaskSnapshot upload;
+      final profileRef = FirebaseStorage.instance
+          .ref('profilePhoto/jenazah/$uid.$fileExtension');
+
+      if (GetPlatform.isWeb) {
+        upload = await profileRef.putData(webImage);
+      } else {
+        upload = await profileRef.putFile(imageFile);
+      }
+      url = await upload.ref.getDownloadURL();
+
+      debugPrint(url);
+
+      // 2. Upload to Firestore
+
+      final data = Jenazah(
+        nama: namaJenazahText.text,
+        tempatTinggal: tempatTinggalText.text,
+        lotKubur: lotKuburText.text,
+        nota: notesText.text,
+        gambarKubur: url,
+        geoPoint: GeoPoint(latitude, longitude),
+        approve: currentUser!.isAnonymous ? false : true,
+        tarikhLahir: tarikhLahir,
+        tarikhMeninggal: tarikhMeninggal,
+        kemaskini: DateTime.now(),
+      ).toFirestore();
+      await FirebaseFirestore.instance.collection('jenazah').doc(uid).set(data);
+
+      return true;
+    } on Exception {
+      return false;
     }
   }
 }

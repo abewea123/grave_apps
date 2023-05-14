@@ -15,8 +15,11 @@ class HomeController extends GetxController {
   final searchInput = TextEditingController();
   Stream<User?>? userChange;
   Stream<QuerySnapshot>? pengurusan;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? rekodJenazah;
   var index = 0.obs;
   var fabScrollPengurusan = true.obs;
+  var fabScrollAllRecord = true.obs;
+  var fabScrollLamanUtama = true.obs;
 
   @override
   void onInit() {
@@ -24,6 +27,11 @@ class HomeController extends GetxController {
     userChange = FirebaseAuth.instance.userChanges();
     pengurusan =
         FirebaseFirestore.instance.collection('pengurusan').snapshots();
+    rekodJenazah = FirebaseFirestore.instance
+        .collection('jenazah')
+        .orderBy('tarikhMeninggal', descending: true)
+        .where('approve', isEqualTo: true)
+        .snapshots();
   }
 
   void callPengurusan(String phone, BuildContext context) {
@@ -97,52 +105,7 @@ class HomeController extends GetxController {
     }
   }
 
-  List<Jenazah> jenazah = [
-    // Jenazah(
-    //   nama: 'Adlan Khayran',
-    //   tempatTinggal: 'Kajang, Selangor',
-    //   lotKubur: '0112',
-    //   nota: '',
-    //   profileImage: '',
-    //   latitude: 0,
-    //   longitude: 0,
-    //   tarikhLahir: DateTime.now(),
-    //   tarikhMeninggal: DateTime.now(),
-    // ),
-    // Jenazah(
-    //   nama: 'Ali Bin Abu',
-    //   tempatTinggal: 'Seri Kembangan, Selangor',
-    //   lotKubur: '0113',
-    //   nota: '',
-    //   profileImage: '',
-    //   latitude: 0,
-    //   longitude: 0,
-    //   tarikhLahir: DateTime.now(),
-    //   tarikhMeninggal: DateTime.now(),
-    // ),
-    // Jenazah(
-    //   nama: 'Ahmad Albab',
-    //   tempatTinggal: 'Isketambola, Pasir Berdengung',
-    //   lotKubur: '0114',
-    //   nota: 'Arwah kedekut orangnya',
-    //   profileImage: '',
-    //   latitude: 0,
-    //   longitude: 0,
-    //   tarikhLahir: DateTime.now(),
-    //   tarikhMeninggal: DateTime.now(),
-    // ),
-    // Jenazah(
-    //   nama: 'Abdullah',
-    //   tempatTinggal: 'Pasir Mas, Kelantan',
-    //   lotKubur: '0115',
-    //   nota: '',
-    //   profileImage: '',
-    //   latitude: 0,
-    //   longitude: 0,
-    //   tarikhLahir: DateTime.now(),
-    //   tarikhMeninggal: DateTime.now(),
-    // ),
-  ];
+  List<Jenazah> jenazah = [];
 
   List<KadArwah> cards() {
     List<KadArwah> kad = [];
@@ -150,12 +113,7 @@ class HomeController extends GetxController {
     for (var kadArwah in jenazah) {
       kad.add(
         KadArwah(
-          nama: kadArwah.nama,
-          alamat: kadArwah.tempatTinggal,
-          tarikhLahir: kadArwah.tarikhLahir.toString(),
-          tarikhMeninggal: kadArwah.tarikhMeninggal.toString(),
-          lotKubur: kadArwah.lotKubur,
-          nota: kadArwah.nota,
+          jenazah: kadArwah,
         ),
       );
     }

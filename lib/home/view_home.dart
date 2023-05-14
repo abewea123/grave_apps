@@ -44,10 +44,10 @@ class Home extends StatelessWidget {
             }
             return Row(
               children: [
-                MediaQuery.of(context).size.width > 800
+                MediaQuery.of(context).size.width > 600
                     ? Obx(() => NavigationRail(
                           minWidth: 80,
-                          extended: MediaQuery.of(context).size.width > 1200
+                          extended: MediaQuery.of(context).size.width > 900
                               ? true
                               : false,
                           useIndicator: true,
@@ -73,7 +73,7 @@ class Home extends StatelessWidget {
                               controller.index.value = value,
                         ))
                     : const SizedBox(),
-                MediaQuery.of(context).size.width > 800
+                MediaQuery.of(context).size.width >= 600
                     ? const VerticalDivider()
                     : const SizedBox(),
                 Expanded(
@@ -89,7 +89,7 @@ class Home extends StatelessWidget {
               ],
             );
           }),
-      bottomNavigationBar: MediaQuery.of(context).size.width < 800
+      bottomNavigationBar: MediaQuery.of(context).size.width < 600
           ? Obx(
               () => NavigationBar(
                 onDestinationSelected: (value) =>

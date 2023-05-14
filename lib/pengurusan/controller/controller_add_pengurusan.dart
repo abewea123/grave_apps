@@ -173,6 +173,8 @@ class ControllerAddPengurusan extends GetxController {
                     Get.back();
                     if (GetPlatform.isWeb) {
                       chooseImageWeb(context);
+                    } else if (GetPlatform.isMacOS) {
+                      chooseImageMac(context);
                     } else {
                       chooseImage(context);
                     }
