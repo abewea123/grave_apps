@@ -9,9 +9,7 @@ class CariJenazah extends SearchDelegate {
 
   List<Jenazah> _getList() {
     return _homeController.jenazah.where((jenazah) {
-      return jenazah.nama
-          .toString()
-          .toLowerCase()
+      return '${jenazah.nama.toLowerCase()} ${jenazah.tempatTinggal.toLowerCase()} ${jenazah.lotKubur.toLowerCase()}'
           .contains(query.toLowerCase());
     }).toList();
   }
@@ -87,7 +85,7 @@ class CariJenazah extends SearchDelegate {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Anda boleh cari nama atau lot kubur jenazah',
+                  'Anda boleh cari nama, tempat tinggal atau lot kubur jenazah',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey,

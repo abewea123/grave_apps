@@ -118,10 +118,20 @@ class AddRecordController extends GetxController {
                   final success = await _addToFirebase();
 
                   if (success == true && context.mounted) {
-                    ToastView.success(context,
-                        title: 'Operasi selesai',
-                        subtitle: 'Pengurusan telah ditambah ke pangkalan data',
-                        icon: Icons.person_add);
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user!.isAnonymous) {
+                      ToastView.success(context,
+                          title: 'Operasi selesai',
+                          subtitle:
+                              'Rekod jenazah yang anda masukkan akan di semak oleh pihak pengurusan terlebih dahulu sebelum ditambah ke pangkalan data',
+                          icon: Icons.person_add);
+                    } else {
+                      ToastView.success(context,
+                          title: 'Operasi selesai',
+                          subtitle:
+                              'Rekod jenazah telah ditambah ke pangkalan data',
+                          icon: Icons.person_add);
+                    }
                     Get.back();
                     Get.back();
                   }

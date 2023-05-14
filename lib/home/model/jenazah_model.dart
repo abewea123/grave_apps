@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Jenazah {
+  final String? id;
   final String nama;
   final String tempatTinggal;
   final String lotKubur;
@@ -13,7 +14,8 @@ class Jenazah {
   final DateTime kemaskini;
 
   Jenazah(
-      {required this.nama,
+      {this.id,
+      required this.nama,
       required this.tempatTinggal,
       required this.lotKubur,
       required this.nota,
@@ -24,8 +26,9 @@ class Jenazah {
       required this.tarikhMeninggal,
       required this.kemaskini});
 
-  factory Jenazah.fromFirestore(dynamic json) {
+  factory Jenazah.fromFirestore(QueryDocumentSnapshot json) {
     return Jenazah(
+        id: json.id,
         nama: json['nama'],
         tempatTinggal: json['tempatTinggal'],
         lotKubur: json['lotKubur'],
