@@ -26,7 +26,7 @@ class Jenazah {
       required this.tarikhMeninggal,
       required this.kemaskini});
 
-  factory Jenazah.fromFirestore(QueryDocumentSnapshot json) {
+  factory Jenazah.fromFirestore(dynamic json) {
     return Jenazah(
         id: json.id,
         nama: json['nama'],

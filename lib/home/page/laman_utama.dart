@@ -100,7 +100,7 @@ class LamanUtamaView extends StatelessWidget {
                                 );
                               }
 
-                              if (snapshot.hasData) {
+                              if (snapshot.hasData || snapshot.data != null) {
                                 _controller.jenazah = snapshot.data!.docs
                                     .map((docs) => Jenazah.fromFirestore(docs))
                                     .toList();

@@ -29,7 +29,6 @@ class HomeController extends GetxController {
         FirebaseFirestore.instance.collection('pengurusan').snapshots();
     rekodJenazah = FirebaseFirestore.instance
         .collection('jenazah')
-        .orderBy('tarikhMeninggal', descending: true)
         .where('approve', isEqualTo: true)
         .snapshots();
   }

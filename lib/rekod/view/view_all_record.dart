@@ -33,12 +33,20 @@ class ViewAllRecord extends StatelessWidget {
                 (context, index) {
                   var jenazah = _controller.jenazah[index];
                   return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(jenazah.gambarKubur),
+                    leading: Hero(
+                      tag: jenazah.id.toString(),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(jenazah.gambarKubur),
+                      ),
                     ),
                     title: Text(jenazah.nama),
                     subtitle: Text(jenazah.tempatTinggal),
-                    onTap: () {},
+                    onTap: () => Get.toNamed(
+                      MyRoutes.detailsRekod,
+                      parameters: {
+                        'uid': jenazah.id.toString(),
+                      },
+                    ),
                   );
                 },
                 childCount: _controller.jenazah.length,
