@@ -72,6 +72,47 @@ class ControllerAddPengurusan extends GetxController {
     }
   }
 
+  void deleteAccount(BuildContext context, Pengurusan pengurusan) {
+    Get.dialog(
+      BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          icon: const Icon(Icons.person_off),
+          title: const Text('Adakah anda pasti?'),
+          content: const Text('Segala maklumat pengurusan ini akan di padam!'),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final result = await _deleteUser(pengurusan);
+                if (result == true) {
+                  if (context.mounted) {
+                    ToastView.success(context,
+                        title: 'Operasi Selesai',
+                        subtitle: 'Pengurusan telah dipadam',
+                        icon: Icons.person_off);
+                  }
+                } else {
+                  if (context.mounted) {
+                    ToastView.error(context,
+                        title: 'Operasi Gagal',
+                        subtitle: 'Kesalahan telah berlaku!',
+                        icon: Icons.person_off);
+                  }
+                  Get.back();
+                }
+              },
+              child: const Text('Pasti'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void chooseImage(BuildContext context) async {
     Haptic.feedbackClick();
     final file = await _pickImage(context, (file) => _cropSquareImage(file));
@@ -242,6 +283,41 @@ class ControllerAddPengurusan extends GetxController {
           ),
         );
       }
+    }
+  }
+
+  Future<bool> _deleteUser(Pengurusan pengurusan) async {
+    try {
+      Get.back();
+      Get.back();
+      Get.dialog(
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: const AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator.adaptive(),
+                SizedBox(height: 5),
+                Text('Memadam maklumat pengurusan...'),
+              ],
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+      final id = FirebaseAuth.instance.currentUser!.uid;
+
+      await FirebaseStorage.instance.refFromURL(pengurusan.photoURL).delete();
+      await FirebaseFirestore.instance
+          .collection('pengurusan')
+          .doc(id)
+          .delete();
+      await FirebaseAuth.instance.currentUser!.delete();
+      Get.back();
+      return true;
+    } on Exception {
+      return false;
     }
   }
 

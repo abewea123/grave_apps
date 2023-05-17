@@ -20,6 +20,7 @@ class HomeController extends GetxController {
   var fabScrollPengurusan = true.obs;
   var fabScrollAllRecord = true.obs;
   var fabScrollLamanUtama = true.obs;
+  var fabTambahRekod = true.obs;
 
   @override
   void onInit() {

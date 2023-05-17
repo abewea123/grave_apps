@@ -105,6 +105,10 @@ class LamanUtamaView extends StatelessWidget {
                                     .map((docs) => Jenazah.fromFirestore(docs))
                                     .toList();
 
+                                _controller.jenazah.sort(((a, b) => b
+                                    .tarikhMeninggal
+                                    .compareTo(a.tarikhMeninggal)));
+
                                 int length = _controller.jenazah.length;
                                 return _content(length);
                               }
@@ -147,14 +151,19 @@ class LamanUtamaView extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          'Berikut adalah $length senarai rekod  jenazah yang baru dikebumikan',
+          'Berikut adalah ${length <= 5 ? length : 5} senarai rekod  jenazah yang baru dikebumikan',
           style: const TextStyle(color: Colors.grey),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
         const Text(
-          'كُلُّ نَفْسٍ ذَاۤىِٕقَةُ الْمَوْتِۗ ثُمَّ اِلَيْنَا تُرْجَعُوْنَ',
+          'اَللهُمَّ اغْفِرْلَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ',
           style: TextStyle(color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+        const Text(
+          'Ya Allah, ampunilah, rahmatilah, kuatkanlah dan maafkanlah dia.',
+          style: TextStyle(color: Colors.grey, fontSize: 13),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 50),

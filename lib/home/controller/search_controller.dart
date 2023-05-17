@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/extension.dart';
+import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/controller/home_controller.dart';
 
 import '../model/jenazah_model.dart';
@@ -99,14 +101,16 @@ class CariJenazah extends SearchDelegate {
             itemBuilder: (context, i) {
               Jenazah result = suggestion[i];
               return ListTile(
-                title: Text(result.nama),
-                subtitle: Text(result.tempatTinggal),
+                title: Text(result.nama.capitalizeByWord()),
+                subtitle: Text(result.tempatTinggal.capitalizeByWord()),
                 leading: CircleAvatar(
                   backgroundColor: Get.isDarkMode
                       ? Theme.of(context).colorScheme.secondaryContainer
                       : Theme.of(context).colorScheme.secondary,
+                  backgroundImage: NetworkImage(result.gambarKubur),
                 ),
-                onTap: () {},
+                onTap: () => Get.toNamed(MyRoutes.detailsRekod,
+                    parameters: {'uid': result.id.toString()}),
               );
             });
   }

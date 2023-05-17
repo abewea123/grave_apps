@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/extension.dart';
 import 'package:grave_apps/config/routes.dart';
 import 'package:intl/intl.dart';
 
@@ -51,14 +52,14 @@ class KadArwah extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  jenazah.nama,
+                  jenazah.nama.capitalizeByWord(),
                   style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
                 Text(
-                  jenazah.tempatTinggal,
+                  jenazah.tempatTinggal.capitalizeByWord(),
                   style: const TextStyle(color: Colors.white),
                 ),
                 Text(

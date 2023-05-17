@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/extension.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/routes.dart';
 
@@ -39,8 +40,8 @@ class ViewAllRecord extends StatelessWidget {
                         backgroundImage: NetworkImage(jenazah.gambarKubur),
                       ),
                     ),
-                    title: Text(jenazah.nama),
-                    subtitle: Text(jenazah.tempatTinggal),
+                    title: Text(jenazah.nama.capitalizeByWord()),
+                    subtitle: Text(jenazah.tempatTinggal.capitalizeByWord()),
                     onTap: () => Get.toNamed(
                       MyRoutes.detailsRekod,
                       parameters: {

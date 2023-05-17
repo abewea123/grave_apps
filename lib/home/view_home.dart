@@ -51,6 +51,18 @@ class Home extends StatelessWidget {
                               ? true
                               : false,
                           useIndicator: true,
+                          leading: user.isAnonymous
+                              ? const SizedBox()
+                              : Column(
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                        user.photoURL.toString(),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                ),
                           destinations: const [
                             NavigationRailDestination(
                               icon: Icon(Icons.home_outlined),

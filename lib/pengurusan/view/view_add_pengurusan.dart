@@ -70,7 +70,6 @@ class ViewAddPengurusan extends StatelessWidget {
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       controller: _addPengurusan.namaText,
-                      keyboardType: TextInputType.name,
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         icon: Icon(
@@ -119,7 +118,6 @@ class ViewAddPengurusan extends StatelessWidget {
                     TextFormField(
                       controller: _addPengurusan.kawasanQaryahText,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.name,
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         icon: Icon(
@@ -140,7 +138,6 @@ class ViewAddPengurusan extends StatelessWidget {
                     TextFormField(
                       controller: _addPengurusan.jawatanPengurusanText,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.name,
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
                         icon: Icon(
