@@ -1,14 +1,17 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/controller/home_controller.dart';
 import 'package:grave_apps/home/model/jenazah_model.dart';
+import 'package:grave_apps/rekod/controller/controller_add_record.dart';
 import 'package:intl/intl.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:quds_popup_menu/quds_popup_menu.dart';
 
 class ViewDetailsRecord extends StatefulWidget {
   const ViewDetailsRecord({super.key});
@@ -20,6 +23,8 @@ class ViewDetailsRecord extends StatefulWidget {
 class _ViewDetailsRecordState extends State<ViewDetailsRecord> {
   final _params = Get.parameters;
   final _homeController = Get.put(HomeController());
+  final _addController = Get.put(AddRecordController());
+  final user = FirebaseAuth.instance.currentUser;
   int daysBetween(DateTime from, DateTime to) {
     from = DateTime(from.year, from.month, from.day);
     to = DateTime(to.year, to.month, to.day);
@@ -108,8 +113,7 @@ class _ViewDetailsRecordState extends State<ViewDetailsRecord> {
                 },
                 child: CustomScrollView(
                   slivers: [
-                    SliverAppBar.large(
-                      title: Text(jenazah.nama),
+                    SliverAppBar(
                       flexibleSpace: Hero(
                         tag: jenazah.id.toString(),
                         child: FlexibleSpaceBar(
@@ -144,6 +148,30 @@ class _ViewDetailsRecordState extends State<ViewDetailsRecord> {
                           ),
                         ),
                       ),
+                      actions: [
+                        user!.isAnonymous
+                            ? const SizedBox()
+                            : QudsPopupButton(
+                                items: [
+                                  QudsPopupMenuItem(
+                                    leading: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                    title: const Text(
+                                      'Buang',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    onPressed: () =>
+                                        _addController.confirmationDeleteDialog(
+                                            context, jenazah),
+                                  ),
+                                ],
+                                child: const Icon(Icons.more_vert),
+                              ),
+                      ],
                     ),
                     SliverList(
                       delegate: SliverChildListDelegate(

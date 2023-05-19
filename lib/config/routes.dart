@@ -55,7 +55,7 @@ class MyRoutes {
     ),
     GetPage(
       name: rekodBelumDiluluskan,
-      page: () => ViewApproveReport(),
+      page: () => const ViewApproveReport(),
     ),
   ];
 }
