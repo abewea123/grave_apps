@@ -3,22 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/extension.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/routes.dart';
 import 'package:grave_apps/home/model/pengurusan_model.dart';
 import '../controller/home_controller.dart';
-
-extension StringExtension on String {
-  String capitalizeByWord() {
-    if (trim().isEmpty) {
-      return '';
-    }
-    return split(' ')
-        .map((element) =>
-            "${element[0].toUpperCase()}${element.substring(1).toLowerCase()}")
-        .join(" ");
-  }
-}
 
 class PengurusanJenazahView extends StatelessWidget {
   final User? user;
@@ -80,7 +69,9 @@ class PengurusanJenazahView extends StatelessWidget {
                           children: snapshot.data!.docs.map((docs) {
                             final pengurusan = Pengurusan.fromRealtime(docs);
                             return ListTile(
-                              title: Text(pengurusan.nama.toString()),
+                              title: Text(pengurusan.nama
+                                  .capitalizeByWord()
+                                  .toString()),
                               subtitle: Text(pengurusan.jawatan
                                   .toString()
                                   .capitalizeByWord()),
@@ -123,14 +114,14 @@ class PengurusanJenazahView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  pengurusan.nama.toString(),
+                  pengurusan.nama.capitalizeByWord().toString(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25,
                   ),
                 ),
                 Text(
-                  pengurusan.jawatan.toString().capitalizeByWord(),
+                  pengurusan.jawatan.capitalizeByWord(),
                   style: const TextStyle(color: Colors.grey, fontSize: 18),
                 ),
                 const SizedBox(height: 20),

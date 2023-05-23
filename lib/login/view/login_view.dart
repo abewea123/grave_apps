@@ -75,7 +75,7 @@ class ViewLogin extends StatelessWidget {
                               focusNode: _loginController.passwordFocus,
                               controller: _loginController.passwordText,
                               keyboardType: TextInputType.visiblePassword,
-                              obscureText: !_loginController.showPassword.value,
+                              obscureText: _loginController.showPassword.value,
                               decoration: InputDecoration(
                                 label: const Text('Kata laluan'),
                                 errorText: _loginController.errorPassword,
@@ -84,10 +84,11 @@ class ViewLogin extends StatelessWidget {
                                   padding: const EdgeInsets.all(8.0),
                                   child: IconButton(
                                     onPressed: _loginController.showingPassword,
-                                    icon: _loginController.showPassword.value ==
-                                            true
-                                        ? const Icon(Icons.visibility)
-                                        : const Icon(Icons.visibility_off),
+                                    icon:
+                                        !_loginController.showPassword.value ==
+                                                true
+                                            ? const Icon(Icons.visibility)
+                                            : const Icon(Icons.visibility_off),
                                   ),
                                 ),
                               ),

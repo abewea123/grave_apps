@@ -1,9 +1,9 @@
 import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/toast_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,20 +16,22 @@ class HomeController extends GetxController {
   Stream<User?>? userChange;
   Stream<QuerySnapshot>? pengurusan;
   Stream<QuerySnapshot<Map<String, dynamic>>>? rekodJenazah;
+  final box = GetStorage();
   var index = 0.obs;
   var fabScrollPengurusan = true.obs;
   var fabScrollAllRecord = true.obs;
   var fabScrollLamanUtama = true.obs;
+  var fabTambahRekod = true.obs;
 
   @override
   void onInit() {
     super.onInit();
+    index.value = box.read('currentNav') ?? 0;
     userChange = FirebaseAuth.instance.userChanges();
     pengurusan =
         FirebaseFirestore.instance.collection('pengurusan').snapshots();
     rekodJenazah = FirebaseFirestore.instance
         .collection('jenazah')
-        .orderBy('tarikhMeninggal', descending: true)
         .where('approve', isEqualTo: true)
         .snapshots();
   }

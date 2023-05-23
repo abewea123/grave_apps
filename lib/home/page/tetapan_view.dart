@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:grave_apps/config/routes.dart';
-import 'package:grave_apps/config/toast_view.dart';
-
 import '../../config/theme_data.dart';
 
 class TetapanView extends StatefulWidget {
@@ -81,29 +80,32 @@ class _TetapanViewState extends State<TetapanView> {
                               onTap: () => Get.toNamed(MyRoutes.login),
                             )
                           : ListTile(
-                              leading: const Icon(Icons.logout),
-                              title: const Text('Log Keluar'),
-                              subtitle:
-                                  const Text('Log keluar akaun pengurusan'),
-                              onTap: () {
-                                FirebaseAuth.instance.signOut().then((value) {
-                                  ToastView.error(
-                                    context,
-                                    icon: Icons.logout,
-                                    subtitle:
-                                        'Sila log masuk semula untuk mengaktifkan ciri pengurusan',
-                                    title: 'Log Keluar Berjaya',
-                                  );
-                                });
-                              },
+                              leading: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('jenazah')
+                                      .where('approve', isEqualTo: false)
+                                      .snapshots(),
+                                  builder: (context,
+                                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Icon(Icons.person_2_rounded);
+                                    }
+                                    return snapshot.data!.docs.isEmpty
+                                        ? const Icon(Icons.person_2_rounded)
+                                        : Badge(
+                                            label: Text(snapshot
+                                                .data!.docs.length
+                                                .toString()),
+                                            child: const Icon(
+                                                Icons.person_2_rounded),
+                                          );
+                                  }),
+                              title: const Text('Maklumat Akaun'),
+                              subtitle: const Text('Lihat maklumat anda'),
+                              onTap: () =>
+                                  Get.toNamed(MyRoutes.maklumatPengurusan),
                             ),
-                      // Text(
-                      //   'Debugging',
-                      //   style: TextStyle(
-                      //     color: Theme.of(context).colorScheme.primary,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

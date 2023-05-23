@@ -100,10 +100,14 @@ class LamanUtamaView extends StatelessWidget {
                                 );
                               }
 
-                              if (snapshot.hasData) {
+                              if (snapshot.hasData || snapshot.data != null) {
                                 _controller.jenazah = snapshot.data!.docs
                                     .map((docs) => Jenazah.fromFirestore(docs))
                                     .toList();
+
+                                _controller.jenazah.sort(((a, b) => b
+                                    .tarikhMeninggal
+                                    .compareTo(a.tarikhMeninggal)));
 
                                 int length = _controller.jenazah.length;
                                 return _content(length);
@@ -136,25 +140,34 @@ class LamanUtamaView extends StatelessWidget {
     return Column(
       children: [
         Swiper(
-          itemCount: length <= 5 ? length : 5,
+          itemCount: length,
+          index: _controller.box.read('currentSwiper') ?? 0,
           itemBuilder: (BuildContext context, int index) {
             return _controller.cards()[index];
           },
           layout: SwiperLayout.TINDER,
+          onIndexChanged: (current) {
+            _controller.box.write('currentSwiper', current);
+          },
           itemWidth: 400,
           loop: false,
           itemHeight: 300,
         ),
         const SizedBox(height: 20),
         Text(
-          'Berikut adalah $length senarai rekod  jenazah yang baru dikebumikan',
+          'Berikut adalah $length senarai rekod  jenazah yang dikebumikan',
           style: const TextStyle(color: Colors.grey),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
         const Text(
-          'كُلُّ نَفْسٍ ذَاۤىِٕقَةُ الْمَوْتِۗ ثُمَّ اِلَيْنَا تُرْجَعُوْنَ',
+          'اَللهُمَّ اغْفِرْلَهُ وَارْحَمْهُ وَعَافِهِ وَاعْفُ عَنْهُ',
           style: TextStyle(color: Colors.grey),
+          textAlign: TextAlign.center,
+        ),
+        const Text(
+          'Ya Allah, ampunilah, rahmatilah, kuatkanlah dan maafkanlah dia.',
+          style: TextStyle(color: Colors.grey, fontSize: 13),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 50),

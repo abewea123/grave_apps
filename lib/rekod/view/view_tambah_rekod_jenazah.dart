@@ -190,7 +190,7 @@ class ViewAddJenazah extends StatelessWidget {
                         maxLines: 3,
                         decoration: const InputDecoration(
                           hintText:
-                              'cth: Waris kepada Mamat, Arwah baik orangnya...',
+                              'cth: Waris kepada Mamat,Kubur berdekatan dengan pokok...',
                           label: Text('Nota'),
                           icon: Icon(Icons.note),
                         ),

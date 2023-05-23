@@ -48,6 +48,37 @@ class AddRecordController extends GetxController {
 
   GeocodeAddress? geocode;
 
+  void confirmationDeleteDialog(BuildContext context, Jenazah jenazah) {
+    Get.dialog(
+      BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          icon: const Icon(Icons.delete),
+          title: const Text('Adakah anda pasti?'),
+          content: const Text('Segala rekod ini akan dipadam'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () {
+                Get.back();
+                _deleteRecord(context, jenazah);
+              },
+              child: const Text(
+                'Buang',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void confirmationAddDialog(BuildContext context) {
     if (formkey.currentState!.validate()) {
       if (fileName.value == '') {
@@ -409,6 +440,39 @@ class AddRecordController extends GetxController {
         kemaskini: DateTime.now(),
       ).toFirestore();
       await FirebaseFirestore.instance.collection('jenazah').doc(uid).set(data);
+
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<bool> _deleteRecord(BuildContext context, Jenazah jenazah) async {
+    try {
+      Get.back();
+      Get.dialog(
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: const AlertDialog(
+            icon: Icon(Icons.delete),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Membuang rekod...'),
+                SizedBox(height: 10),
+                CircularProgressIndicator.adaptive()
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await FirebaseStorage.instance.refFromURL(jenazah.gambarKubur).delete();
+      await FirebaseFirestore.instance
+          .collection('jenazah')
+          .doc(jenazah.id)
+          .delete();
+      Get.back();
 
       return true;
     } on Exception {

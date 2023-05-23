@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:grave_apps/config/extension.dart';
 import 'package:grave_apps/config/haptic_feedback.dart';
 import 'package:grave_apps/config/routes.dart';
+import 'package:grave_apps/home/model/jenazah_model.dart';
 
 import '../../home/controller/home_controller.dart';
 
@@ -29,19 +32,54 @@ class ViewAllRecord extends StatelessWidget {
               title: const Text('Semua Rekod'),
             ),
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  var jenazah = _controller.jenazah[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(jenazah.gambarKubur),
-                    ),
-                    title: Text(jenazah.nama),
-                    subtitle: Text(jenazah.tempatTinggal),
-                    onTap: () {},
-                  );
-                },
-                childCount: _controller.jenazah.length,
+              delegate: SliverChildListDelegate(
+                [
+                  StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('jenazah')
+                          .where('approve', isEqualTo: true)
+                          .snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox(
+                            width: double.infinity,
+                            height: 500,
+                            child: Column(
+                              children: [
+                                CircularProgressIndicator.adaptive(),
+                                SizedBox(height: 10),
+                                Text('Memuatkan data...')
+                              ],
+                            ),
+                          );
+                        }
+                        return Column(
+                          children: snapshot.data!.docs.map((docs) {
+                            final jenazah = Jenazah.fromFirestore(docs);
+                            return ListTile(
+                              leading: Hero(
+                                tag: jenazah.id.toString(),
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(jenazah.gambarKubur),
+                                ),
+                              ),
+                              title: Text(jenazah.nama.capitalizeByWord()),
+                              subtitle: Text(
+                                  jenazah.tempatTinggal.capitalizeByWord()),
+                              onTap: () => Get.toNamed(
+                                MyRoutes.detailsRekod,
+                                parameters: {
+                                  'uid': jenazah.id.toString(),
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      }),
+                ],
               ),
             ),
           ],
