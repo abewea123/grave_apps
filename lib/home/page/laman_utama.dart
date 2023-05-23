@@ -140,18 +140,22 @@ class LamanUtamaView extends StatelessWidget {
     return Column(
       children: [
         Swiper(
-          itemCount: length <= 5 ? length : 5,
+          itemCount: length,
+          index: _controller.box.read('currentSwiper') ?? 0,
           itemBuilder: (BuildContext context, int index) {
             return _controller.cards()[index];
           },
           layout: SwiperLayout.TINDER,
+          onIndexChanged: (current) {
+            _controller.box.write('currentSwiper', current);
+          },
           itemWidth: 400,
           loop: false,
           itemHeight: 300,
         ),
         const SizedBox(height: 20),
         Text(
-          'Berikut adalah ${length <= 5 ? length : 5} senarai rekod  jenazah yang baru dikebumikan',
+          'Berikut adalah $length senarai rekod  jenazah yang dikebumikan',
           style: const TextStyle(color: Colors.grey),
           textAlign: TextAlign.center,
         ),
