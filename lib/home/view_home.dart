@@ -8,14 +8,13 @@ import 'package:grave_apps/home/page/tetapan_view.dart';
 import 'controller/home_controller.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
-
+  Home({super.key});
+  final _controller = Get.put(HomeController());
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeController());
     return Scaffold(
       body: StreamBuilder<User?>(
-          stream: controller.userChange,
+          stream: _controller.userChange,
           builder: (context, snapshot) {
             User? user = snapshot.data;
 
@@ -80,9 +79,11 @@ class Home extends StatelessWidget {
                               label: Text('Tetapan'),
                             ),
                           ],
-                          selectedIndex: controller.index.value,
-                          onDestinationSelected: (value) =>
-                              controller.index.value = value,
+                          selectedIndex: _controller.index.value,
+                          onDestinationSelected: (value) {
+                            _controller.index.value = value;
+                            _controller.box.write('currentNav', value);
+                          },
                         ))
                     : const SizedBox(),
                 MediaQuery.of(context).size.width >= 600
@@ -90,9 +91,9 @@ class Home extends StatelessWidget {
                     : const SizedBox(),
                 Expanded(
                   child: Obx(() => IndexedStack(
-                        index: controller.index.value,
+                        index: _controller.index.value,
                         children: [
-                          LamanUtamaView(controller: controller, user: user),
+                          LamanUtamaView(controller: _controller, user: user),
                           PengurusanJenazahView(user: user),
                           TetapanView(user: user),
                         ],
@@ -104,9 +105,11 @@ class Home extends StatelessWidget {
       bottomNavigationBar: MediaQuery.of(context).size.width < 600
           ? Obx(
               () => NavigationBar(
-                onDestinationSelected: (value) =>
-                    controller.index.value = value,
-                selectedIndex: controller.index.value,
+                onDestinationSelected: (value) {
+                  _controller.index.value = value;
+                  _controller.box.write('currentNav', value);
+                },
+                selectedIndex: _controller.index.value,
                 destinations: [
                   const NavigationDestination(
                     icon: Icon(Icons.home_outlined),

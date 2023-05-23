@@ -47,7 +47,6 @@ dependencies:
   intl: 
   maps_launcher: ^2.2.0
   path_provider: ^2.0.15
-  firebase_cached_image: ^0.4.2
 
 dev_dependencies:
   flutter_test:

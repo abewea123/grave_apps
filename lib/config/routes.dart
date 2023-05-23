@@ -23,7 +23,7 @@ class MyRoutes {
   List<GetPage> page = [
     GetPage(
       name: home,
-      page: () => const Home(),
+      page: () => Home(),
     ),
     GetPage(
       name: login,
